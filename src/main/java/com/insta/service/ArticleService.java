@@ -1,49 +1,54 @@
 package com.insta.service;
 
+import com.insta.dto.article.ArticleDetailResponseDto;
 import com.insta.dto.article.ArticleRequestDto;
-import com.insta.model.Articles;
-import com.insta.repository.ArticleRepository;
-import lombok.RequiredArgsConstructor;
+import com.insta.dto.article.ArticleResponseDto;
+import com.insta.global.error.exception.ErrorCode;
+import com.insta.global.error.exception.EntityNotFoundException;
+import com.insta.model.Article;
+import com.insta.repository.ArticleRepo;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-@RequiredArgsConstructor
 public class ArticleService {
-    private final ArticleRepository articleRepository;
+    private final ArticleRepo articleRepo;
 
-
-    public String createArticles(ArticleRequestDto requestDto){
-        Articles articles = new Articles(requestDto);
-        articleRepository.save(articles);
-        return "게시글 작성이 성공되었습니다";
+    public ArticleService(ArticleRepo articleRepo) {
+        this.articleRepo = articleRepo;
     }
 
-    public String updateArticles(ArticleRequestDto requestDto, Long id){
-        Articles articles = articleRepository.findById(id).orElseThrow(() -> new NullPointerException("해당 게시글이 존재하지 않습니다."));
-        String msg;
-
-//        if(){
-        articles.update(requestDto);
-        articleRepository.save(articles);
-        msg = "수정완료";
-//        } else{
-//            msg = "자신의 게시글만 수정 가능합니다.";
-//        }
-        return msg;
+    public void createArticle (ArticleRequestDto requestDto){
+        articleRepo.save(Article.createArticle(requestDto.getTitle(), requestDto.getContent()));
     }
 
-
-    public String deleteArticles(Long id){
-        Articles articles = articleRepository.findById(id).orElseThrow(() -> new NullPointerException("해당 게시글이 존재하지 않습니다."));
-        String msg;
-//        if(){
-        articleRepository.deleteById(id);
-        msg = "삭제 완료";
-//        } else{
-//            msg = "자신의 게시글만 삭제 가능합니다.";
-//        }
-        return msg;
+    @Transactional
+    public void updateArticles(ArticleRequestDto requestDto, Long articleId){
+        Article article = exists(articleId);
+        article.updateArticle(requestDto.getTitle(), requestDto.getContent());
     }
 
+    public void deleteArticles(Long articleId){
+        exists(articleId);
+        articleRepo.deleteById(articleId);
+    }
 
+    public List<ArticleResponseDto> getArticles() {
+        List<Article> articleList = articleRepo.findAll();
+        return articleList.stream().map(ArticleResponseDto::from).collect(Collectors.toList());
+    }
+
+    public ArticleDetailResponseDto getArticle(Long articleId) {
+        return articleRepo.findById(articleId)
+                .map(ArticleDetailResponseDto::from)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTFOUND_ARTICLE));
+    }
+
+    private Article exists(Long articleId) {
+        return articleRepo.findById(articleId).orElseThrow(() ->
+                new EntityNotFoundException(ErrorCode.NOTFOUND_ARTICLE));
+    }
 }
