@@ -5,7 +5,9 @@ import com.insta.auth.SignupRequestDto;
 import com.insta.model.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +47,7 @@ public class UserService {
         }
 
     }
+
 
 
 
