@@ -1,47 +1,58 @@
 package com.insta.controller;
 
-import com.insta.model.Articles;
-import com.insta.repository.ArticleRepository;
+import com.insta.dto.article.ArticleDetailResponseDto;
 import com.insta.dto.article.ArticleRequestDto;
+import com.insta.dto.article.ArticleResponseDto;
+import com.insta.global.response.ApiUtils;
+import com.insta.global.response.CommonResponse;
 import com.insta.service.ArticleService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-
-@RestController
 @RequiredArgsConstructor
+@Api(tags = "게시글 API")
+@RestController
+@RequestMapping("/api/articles")
 public class ArticleController {
 
     private final ArticleService articleService;
-    private final ArticleRepository articleRepository;
 
-    //게시글 조회
-    @GetMapping("/api/articles")
-    public List<Articles> getArticles() {
-        return articleRepository.findAllByOrderByCreatedAtDesc();
+    @ApiOperation(value = "게시글 전체 조회")
+    @GetMapping()
+    public CommonResponse<List<ArticleResponseDto>> getArticles() {
+        List<ArticleResponseDto> articles = articleService.getArticles();
+        return ApiUtils.success(200, articles);
     }
 
-    //게시글 작성
-    @PostMapping("/api/articles")
-    public String createArticles(@RequestBody ArticleRequestDto requestDto){
-        return articleService.createArticles(requestDto);
+    @ApiOperation(value = "특정 게시글 조회")
+    @GetMapping("/{articleId}")
+    public CommonResponse<ArticleDetailResponseDto> getArticle(@PathVariable Long articleId) {
+        return ApiUtils.success(200, articleService.getArticle(articleId));
     }
 
-    //일정 수정
-    @PutMapping("/api/articles/{article_Id}")
-    public String updateArticles(@PathVariable Long article_Id, @RequestBody ArticleRequestDto requestDto) {
-        return articleService.updateArticles(requestDto, article_Id);
+    @ApiOperation(value = "게시글 등록")
+    @PostMapping
+    public CommonResponse<?> createArticles(@RequestBody ArticleRequestDto requestDto){
+        articleService.createArticle(requestDto);
+        return ApiUtils.success(201, null);
     }
 
-    //일정 삭제
-    @DeleteMapping("/api/articles/{article_Id}")
-    public String deleteArticles(@PathVariable Long article_Id) {
-        return articleService.deleteArticles(article_Id);
-
+    @ApiOperation(value = "게시글 수정")
+    @PutMapping("/{articleId}")
+    public CommonResponse<?> updateArticles(@PathVariable Long articleId, @RequestBody ArticleRequestDto requestDto) {
+        articleService.updateArticles(requestDto, articleId);
+        return ApiUtils.success(200, null);
     }
 
+    @ApiOperation(value = "게시글 삭제")
+    @DeleteMapping("/{articleId}")
+    public CommonResponse<?> deleteArticles(@PathVariable Long articleId) {
+        articleService.deleteArticles(articleId);
+        return ApiUtils.success(200, null);
+    }
 
 }
