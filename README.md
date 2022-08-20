@@ -23,7 +23,8 @@
 
 ## API
 
-## 배포
+## 백엔드 배포
+https://insta-backend5.herokuapp.com/
 
 ## 개발 환경
 - Intellij IDEA Ultimate
