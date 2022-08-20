@@ -30,6 +30,18 @@ public class ArticleController {
         return articleService.createArticles(requestDto);
     }
 
+    //일정 수정
+    @PutMapping("/api/articles/{article_Id}")
+    public String updateArticles(@PathVariable Long article_Id, @RequestBody ArticleRequestDto requestDto) {
+        return articleService.updateArticles(requestDto, article_Id);
+    }
+
+    //일정 삭제
+    @DeleteMapping("/api/articles/{article_Id}")
+    public String deleteArticles(@PathVariable Long article_Id) {
+        return articleService.deleteArticles(article_Id);
+
+    }
 
 
 }

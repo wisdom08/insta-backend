@@ -15,8 +15,8 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name = "articles")
+@Entity(name = "articles")
+//@Table(name = "articles")
 public class Articles extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -41,8 +41,17 @@ public class Articles extends Timestamped{
 //
 //    @JsonIgnore//@JsonIgnore 어노테이션은 클래스의 속성(필드, 멤버변수) 수준에서 직렬화 역직렬화에 사용되는 논리적 프로퍼티(속성..) 값을 무시할때 사용
 //    @ManyToOne(fetch = LAZY)
-//    @JoinColumn(name = "member_id")//조인 컬럼은 외래 키를 매핑할 때 사용
+//    @JoinColumn(name = "user_id")//조인 컬럼은 외래 키를 매핑할 때 사용
 //    private User user;
+
+    public void update(ArticleRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+    }
+//    public void confirmArticles(User user) {
+//        this.user = user;
+//        user.addArticlesList(this);
+//    }
 
     public Articles(ArticleRequestDto requestDto){
         this.title = requestDto.getTitle();
