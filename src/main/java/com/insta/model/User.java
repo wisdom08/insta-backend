@@ -4,6 +4,10 @@ package com.insta.model;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity(name = "Users")
 @NoArgsConstructor
@@ -29,11 +33,17 @@ public class User {
     @Column
     private String userintro;
 
+//    @OneToMany//(cascade = ALL, orphanRemoval = true)//mappedBy="Users"
+//    private List<Articles> articlesList = new ArrayList<>();
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.userintro = userintro;
     }
+//    public void addArticlesList(Articles articles){
+//        articlesList.add(articles);
+//    }
 
     public void setId(Long user_id) {
         this.user_id = user_id;
