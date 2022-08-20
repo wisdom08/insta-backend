@@ -1,5 +1,7 @@
 package com.insta.controller;
 
+import com.insta.auth.LoginRequestDto;
+import com.insta.jwt.JwtTokenProvider;
 import com.insta.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import com.insta.auth.SignupRequestDto;
@@ -10,10 +12,22 @@ public class UserController {
 
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+
+    @PostMapping("/login")
+    public String doLogin(@RequestBody LoginRequestDto loginRequestDto){
+        if(userService.login(loginRequestDto)) {
+            String token = this.jwtTokenProvider.createToken(loginRequestDto.getUsername());
+            System.out.println(token);
+            return token;
+        }
+        else return "아이디, 비밀번호를 확인해주세요.";
+    }
 
 
 
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public String doSignup(@RequestBody SignupRequestDto requestDto) {
         return userService.registerUser(requestDto);
     }
@@ -22,8 +36,9 @@ public class UserController {
 
 
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 }

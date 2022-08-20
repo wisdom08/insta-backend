@@ -1,10 +1,14 @@
 package com.insta.service;
 
 
+import com.insta.auth.LoginRequestDto;
 import com.insta.auth.SignupRequestDto;
+import com.insta.jwt.JwtTokenProvider;
 import com.insta.model.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -16,6 +20,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+
+
+
 
     public String registerUser(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
@@ -38,6 +48,7 @@ public class UserService {
             return "비밀번호를 입력해주세요.";
         }
         else {
+            password = this.passwordEncoder.encode(password);
             requestDto.setPassword(password);
             User user = new User(username, password);
             this.userRepository.save(user);
@@ -45,6 +56,18 @@ public class UserService {
         }
 
     }
+    public Boolean login(LoginRequestDto loginRequestDto) {
+        User user = this.userRepository.findByUsername(loginRequestDto.getUsername()).orElse((User) null);
+        if(user != null) {
+            return this.passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
+        }
+        else return false;
+    }
+
+
+
+
+
 
 
 

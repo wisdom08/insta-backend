@@ -42,7 +42,7 @@ public class User {
         this.username = username;
     }
     public void setPassword(String password) {
-        this.username = password;
+        this.password = password;
     }
     public void setUserintro(String userintro) {
         this.userintro = userintro;
@@ -52,15 +52,17 @@ public class User {
     public void getId(Long user_id) {
         this.user_id = user_id;
     }
-    public void getUsername(String username) {
-        this.username = username;
+    public String getUsername() {
+        return this.username = username;
     }
-    public void getPassword(String password) {
-        this.username = password;
+    public String getPassword() {
+        return this.password = password;
     }
+
     public void getUserintro(String userintro) {
         this.userintro = userintro;
     }
+
 
 
 }
