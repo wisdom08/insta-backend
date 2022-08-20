@@ -9,7 +9,9 @@ import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -63,6 +65,7 @@ public class UserService {
         }
         else return false;
     }
+
 
 
 
