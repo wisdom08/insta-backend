@@ -36,6 +36,7 @@ public class ArticleService {
         articleRepo.deleteById(articleId);
     }
 
+    @Transactional
     public List<ArticleResponseDto> getArticles() {
         List<Article> articleList = articleRepo.findAll();
         return articleList.stream().map(ArticleResponseDto::from).collect(Collectors.toList());
@@ -47,7 +48,7 @@ public class ArticleService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTFOUND_ARTICLE));
     }
 
-    private Article exists(Long articleId) {
+    public Article exists(Long articleId) {
         return articleRepo.findById(articleId).orElseThrow(() ->
                 new EntityNotFoundException(ErrorCode.NOTFOUND_ARTICLE));
     }

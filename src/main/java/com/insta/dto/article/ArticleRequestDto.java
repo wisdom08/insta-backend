@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class ArticleRequestDto {
-    private final String title;
-    private final String content;
+    private String title;
+    private String content;
 
-    protected void ArticleResponseDto() {}
+    protected ArticleRequestDto() {}
 
     public ArticleRequestDto(String title, String content) {
         this.title = title;
