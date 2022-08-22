@@ -1,0 +1,70 @@
+package com.insta.security;
+
+import com.insta.jwt.JwtAuthenticationFilter;
+import com.insta.jwt.JwtTokenProvider;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        securedEnabled = true
+)
+
+public class WebSecurityConfig {
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @Bean
+    public BCryptPasswordEncoder encodePassword() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and().headers().frameOptions().disable()
+
+                .and().authorizeRequests()
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/swagger-ui.html",
+                                        "/v2/api-docs",
+                                        "/configuration/security",
+                                        "/configuration/ui",
+                                        "/swagger-resources/**",
+                                        "/webjars/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/articles/**").access("isAuthenticated()")
+                .antMatchers(HttpMethod.PUT, "/api/articles/**").access("isAuthenticated()")
+                .antMatchers(HttpMethod.DELETE, "/api/articles/**").access("isAuthenticated()")
+                .anyRequest().permitAll()
+
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+}
