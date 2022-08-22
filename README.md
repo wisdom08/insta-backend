@@ -1,10 +1,10 @@
 # insta-backend
 - 반려동물 전용 SNS
-
+- [front repository](https://github.com/darksilicon13/clone-project)
 ## 팀 프로젝트
 - 프론트
-  - 유성원
-  - 이현규
+  - 유성원 https://github.com/ysw753
+  - 이현규 https://github.com/darksilicon13
 - 백엔드
   - 곽대우 https://github.com/dae-woo
   - 변지혜 https://github.com/wisdom08
