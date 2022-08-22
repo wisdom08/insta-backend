@@ -20,7 +20,6 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.insta.controller"))
-                .paths(PathSelectors.ant("/swagger-ui/"))
                 .paths(PathSelectors.ant("/api/**"))
                 .paths(PathSelectors.any())
                 .build()

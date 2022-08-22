@@ -3,6 +3,8 @@ package com.insta.model;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -16,6 +18,9 @@ public class Article extends Timestamped{
 
     @Column(nullable = false)
     private String content;
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private final List<Comment> comments = new ArrayList<>();
 
     protected Article() {}
 
