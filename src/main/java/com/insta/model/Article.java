@@ -13,6 +13,10 @@ public class Article extends Timestamped{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(nullable = false)
     private String title;
 
@@ -24,13 +28,14 @@ public class Article extends Timestamped{
 
     protected Article() {}
 
-    private Article(String title, String content){
+    private Article(String title, String content, User user){
         this.title = title;
         this.content = content;
+        this.user = user;
     }
 
-    public static Article createArticle(String title, String content) {
-        return new Article(title, content);
+    public static Article createArticle(String title, String content, User user) {
+        return new Article(title, content, user);
     }
 
     public void updateArticle(String title, String content) {

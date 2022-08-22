@@ -13,6 +13,10 @@ public class Comment extends Timestamped {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private String content;
 
     @ManyToOne
@@ -28,22 +32,24 @@ public class Comment extends Timestamped {
 
     protected Comment() {}
 
-    private Comment(String content, Article article) {
+    private Comment(String content, Article article, User user) {
         this.content = content;
         this.article = article;
+        this.user = user;
     }
 
-    public Comment(String content, Article article, Comment parent) {
+    public Comment(String content, Article article, Comment parent, User user) {
         this.content = content;
         this.article = article;
         this.parent = parent;
+        this.user = user;
     }
 
-    public static Comment createComment(Article article, String content) {
-        return new Comment(content, article);
+    public static Comment createComment(Article article, String content, User user) {
+        return new Comment(content, article, user);
     }
 
-    public static Comment createReply(Article article, Comment parentComment, String content) {
-        return new Comment(content, article, parentComment);
+    public static Comment createReply(Article article, Comment parentComment, String content, User user) {
+        return new Comment(content, article, parentComment, user);
     }
 }
