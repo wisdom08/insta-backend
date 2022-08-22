@@ -1,19 +1,19 @@
 package com.insta.service;
 
 
-import com.insta.dto.auth.LoginRequestDto;
-import com.insta.dto.auth.SignupRequestDto;
+import com.insta.dto.user.LoginRequestDto;
+import com.insta.dto.user.LoginResponseDto;
+import com.insta.dto.user.SignupRequestDto;
+import com.insta.global.error.exception.EntityNotFoundException;
+import com.insta.global.error.exception.ErrorCode;
+import com.insta.global.error.exception.InvalidValueException;
 import com.insta.jwt.JwtTokenProvider;
 import com.insta.model.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.Optional;
-
+import org.springframework.validation.Errors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,57 +21,50 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-
-
-
-    public String registerUser(SignupRequestDto requestDto) {
-        String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
-        String passwordCheck = requestDto.getPasswordCheck();
-        String userintro = requestDto.getUserintro();
-
-        Optional<User> userTocheck = this.userRepository.findByUsername(username);
-
-        if(userTocheck.isPresent()){
-            return "중복된 아이디 입니다.";
-        }
-        else if(!Objects.equals(password, passwordCheck)){
-            return "비밀번호가 동일하지 않습니다.";
-        }
-        else if(Objects.equals(username, "")){
-            return "아이디를 입력해주세요.";
-        }
-        else if(Objects.equals(password, "")) {
-            return "비밀번호를 입력해주세요.";
-        }
-        else {
-            password = this.passwordEncoder.encode(password);
-            requestDto.setPassword(password);
-            User user = new User(username, password);
-            this.userRepository.save(user);
-            return "회원가입에 성공하였습니다.";
-        }
-
-    }
-    public Boolean login(LoginRequestDto loginRequestDto) {
-        User user = this.userRepository.findByUsername(loginRequestDto.getUsername()).orElse((User) null);
-        if(user != null) {
-            return this.passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword());
-        }
-        else return false;
+    public void registerUser(SignupRequestDto signupRequestDto, Errors errors) {
+        validateUser(signupRequestDto, errors);
+        User user = User.createUser(signupRequestDto.getUsername(), passwordEncoder.encode(signupRequestDto.getPassword()));
+        userRepository.save(user);
     }
 
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        String username = loginRequestDto.getUsername();
+        User user = exists(username);
+
+        validatePassword(loginRequestDto.getPassword(), user.getPassword());
+        String accessToken = this.jwtTokenProvider.createToken(username);
+
+        return LoginResponseDto.toDto(user.getId(), user.getUsername(), accessToken);
+    }
+
+    private void validatePassword(String inputPassword, String savedPassword) {
+        boolean passwordMatching = passwordEncoder.matches(inputPassword, savedPassword);
+        if(!passwordMatching) throw new InvalidValueException(ErrorCode.LOGIN_INPUT_INVALID);
+    }
+
+    private void validateUser(SignupRequestDto requestDto, Errors errors) {
+        userRepository.findByUsername(requestDto.getUsername())
+                .ifPresent(user -> {
+                    throw new InvalidValueException(ErrorCode.USERNAME_DUPLICATION);
+                });
+
+        isSamePassword(requestDto);
+
+        if (errors.hasErrors()) {
+            throw new InvalidValueException(ErrorCode.INVALID_USER_INPUT);
+        }
+    }
+
+    private void isSamePassword(SignupRequestDto requestDto) {
+        if (!(requestDto.getPassword().equals(requestDto.getPasswordCheck())))
+            throw new InvalidValueException(ErrorCode.NOT_EQUAL_INPUT_PASSWORD);
+    }
 
 
-
-
-
-
-
-
-
-
+    public User exists(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() ->
+                new EntityNotFoundException(ErrorCode.NOTFOUND_USER));
+    }
 }

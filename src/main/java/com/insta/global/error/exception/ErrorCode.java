@@ -14,10 +14,8 @@ public enum ErrorCode {
 
     // 유저
     HANDLE_ACCESS_DENIED(403, "로그인이 필요합니다."),
-    INVALID_INPUT_USERNAME(400, "닉네임을 3자 이상 입력하세요"),
-    NOTEQUAL_INPUT_PASSWORD(400,  "비밀번호가 일치하지 않습니다"),
-    INVALID_PASSWORD(400,  "비밀번호를 8자 이상 입력하세요"),
-    INVALID_USERNAME(400,  "알파벳 대소문자와 숫자로만 입력하세요"),
+    INVALID_USER_INPUT(400, "아이디와 비밀번호 입력값을 다시 확인해주세요"),
+    NOT_EQUAL_INPUT_PASSWORD(400,  "비밀번호가 일치하지 않습니다"),
     NOT_AUTHORIZED(403, "작성자만 수정 및 삭제를 할 수 있습니다."),
     USERNAME_DUPLICATION(400, "이미 등록된 아이디입니다."),
     LOGIN_INPUT_INVALID(400, "로그인 정보를 다시 확인해주세요."),
