@@ -1,4 +1,4 @@
-package com.insta.auth;
+package com.insta.dto.auth;
 
 
 import lombok.Getter;
@@ -8,8 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+public class SignupRequestDto {
 
-public class LoginRequestDto {
     private String username;
     private String password;
+    private String passwordCheck;
+    private String userintro;
+
 }
