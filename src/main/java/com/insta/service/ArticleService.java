@@ -29,13 +29,13 @@ public class ArticleService {
 
     public void createArticle (ArticleRequestDto requestDto){
         User user = userService.exists(getCurrentUsername());
-        articleRepo.save(Article.createArticle(requestDto.getTitle(), requestDto.getContent(), user));
+        articleRepo.save(Article.createArticle(requestDto.getContent(), user));
     }
 
     @Transactional
     public void updateArticles(ArticleRequestDto requestDto, Long articleId){
         Article article = isAuthorized(articleId);
-        article.updateArticle(requestDto.getTitle(), requestDto.getContent());
+        article.updateArticle(requestDto.getContent());
     }
     @Transactional
     public void deleteArticles(Long articleId){
