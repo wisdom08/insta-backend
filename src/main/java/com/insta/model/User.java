@@ -2,13 +2,11 @@ package com.insta.model;
 
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
-@NoArgsConstructor
 public class User extends Timestamped {
 
     @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -22,6 +20,8 @@ public class User extends Timestamped {
 
     @Column
     private String userintro;
+
+    protected User() {}
 
     private User(String username, String password) {
         this.username = username;
