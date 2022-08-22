@@ -15,7 +15,7 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public String doLogin(@RequestBody LoginRequestDto loginRequestDto){
         if(userService.login(loginRequestDto)) {
             String token = this.jwtTokenProvider.createToken(loginRequestDto.getUsername());

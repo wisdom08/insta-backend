@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/admin/**").permitAll()
                 .antMatchers("/user/**").permitAll()
+                .antMatchers("/exception/**","/item/**","/swagger-ui.html", "/v2/api-docs", "/configuration/**", "/swagger/**","/swagger-resources/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 // 세션인증 사용하지 않음
