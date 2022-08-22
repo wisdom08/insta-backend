@@ -18,9 +18,6 @@ public class Article extends Timestamped{
     private User user;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
     private String content;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -28,18 +25,16 @@ public class Article extends Timestamped{
 
     protected Article() {}
 
-    private Article(String title, String content, User user){
-        this.title = title;
+    private Article(String content, User user){
         this.content = content;
         this.user = user;
     }
 
-    public static Article createArticle(String title, String content, User user) {
-        return new Article(title, content, user);
+    public static Article createArticle(String content, User user) {
+        return new Article(content, user);
     }
 
-    public void updateArticle(String title, String content) {
-        this.title = title;
+    public void updateArticle(String content) {
         this.content = content;
     }
 
