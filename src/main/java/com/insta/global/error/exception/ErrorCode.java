@@ -31,7 +31,11 @@ public enum ErrorCode {
     INVALID_CONTENT(400, "내용을 입력해주세요."),
     UNSUPPORTED_FILE_FORMAT(404, "지원하지 않는 파일 형식입니다."),
     CONVERTING_FAILED(400, "파일 변환에 실패했습니다."),
-            ;
+
+    // 댓글
+    NOTFOUND_COMMENT(404, "해당 댓글이 존재하지 않습니다."),
+
+    ;
     private final String message;
     private final int status;
 

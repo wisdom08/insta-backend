@@ -36,6 +36,7 @@ public class ArticleService {
         articleRepo.deleteById(articleId);
     }
 
+    @Transactional
     public List<ArticleResponseDto> getArticles() {
         List<Article> articleList = articleRepo.findAll();
         return articleList.stream().map(ArticleResponseDto::from).collect(Collectors.toList());
