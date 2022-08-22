@@ -1,10 +1,10 @@
 package com.insta.controller;
 
-import com.insta.auth.LoginRequestDto;
+import com.insta.dto.auth.LoginRequestDto;
+import com.insta.dto.auth.SignupRequestDto;
 import com.insta.jwt.JwtTokenProvider;
 import com.insta.service.UserService;
 import org.springframework.web.bind.annotation.*;
-import com.insta.auth.SignupRequestDto;
 
 @RestController
 @RequestMapping("/user")
