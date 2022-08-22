@@ -1,44 +1,41 @@
 package com.insta.controller;
 
-import com.insta.dto.auth.LoginRequestDto;
-import com.insta.dto.auth.SignupRequestDto;
-import com.insta.jwt.JwtTokenProvider;
+import com.insta.dto.user.LoginRequestDto;
+import com.insta.dto.user.LoginResponseDto;
+import com.insta.dto.user.SignupRequestDto;
+import com.insta.global.response.ApiUtils;
+import com.insta.global.response.CommonResponse;
 import com.insta.service.UserService;
-import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
+@Api(tags = "유저 API")
+@RequiredArgsConstructor
+@RequestMapping("/api/auth")
 @RestController
-@RequestMapping("/user")
 public class UserController {
 
-
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-
+    @ApiOperation(value = "로그인")
     @PostMapping("/signin")
-    public String doLogin(@RequestBody LoginRequestDto loginRequestDto){
-        if(userService.login(loginRequestDto)) {
-            String token = this.jwtTokenProvider.createToken(loginRequestDto.getUsername());
-            System.out.println(token);
-            return token;
-        }
-        else return "아이디, 비밀번호를 확인해주세요.";
+    public CommonResponse<?> doLogin(@RequestBody LoginRequestDto loginRequestDto){
+        LoginResponseDto loginResponseDto = userService.login(loginRequestDto);
+        return ApiUtils.success(200, loginResponseDto);
     }
 
-
-
+    @ApiOperation(value = "회원가입")
     @PostMapping("/signup")
-    public String doSignup(@RequestBody SignupRequestDto requestDto) {
-        return userService.registerUser(requestDto);
+    public CommonResponse<?> doSignup(@Valid @RequestBody SignupRequestDto signupRequestDto, Errors errors) {
+        userService.registerUser(signupRequestDto, errors);
+        return ApiUtils.success(201, null);
     }
-
-
-
-
-
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
-        this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
 }
