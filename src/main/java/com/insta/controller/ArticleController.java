@@ -23,8 +23,8 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 전체 조회")
     @GetMapping()
-    public CommonResponse<List<ArticleResponseDto>> getArticles() {
-        List<ArticleResponseDto> articles = articleService.getArticles();
+    public CommonResponse<List<ArticleResponseDto>> getArticles(@RequestParam Long articleId, @RequestParam Integer size) {
+        List<ArticleResponseDto> articles = articleService.getArticles(articleId, size);
         return ApiUtils.success(200, articles);
     }
 

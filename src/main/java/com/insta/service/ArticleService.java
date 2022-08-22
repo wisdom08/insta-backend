@@ -9,6 +9,8 @@ import com.insta.global.error.exception.InvalidValueException;
 import com.insta.model.Article;
 import com.insta.model.User;
 import com.insta.repository.ArticleRepo;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -53,8 +55,8 @@ public class ArticleService {
     }
 
     @Transactional
-    public List<ArticleResponseDto> getArticles() {
-        List<Article> articleList = articleRepo.findAll();
+    public List<ArticleResponseDto> getArticles(Long articleId, Integer size) {
+        Slice<Article> articleList = articleRepo.findAllOrderByIdDesc(articleId, Pageable.ofSize(size));
         return articleList.stream().map(ArticleResponseDto::from).collect(Collectors.toList());
     }
 
