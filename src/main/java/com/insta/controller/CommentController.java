@@ -37,14 +37,14 @@ public class CommentController {
 
     @ApiOperation(value = "특정 게시글의 전체 댓글 조회")
     @GetMapping("/comments")
-    public CommonResponse<List<CommentResponseDto>> getComments(@PathVariable Long articleId) {
-        return ApiUtils.success(200, commentService.getComments(articleId));
+    public CommonResponse<List<CommentResponseDto>> getComments(@PathVariable Long articleId, @RequestParam Long commentId, @RequestParam Integer size) {
+        return ApiUtils.success(200, commentService.getComments(articleId, commentId, size));
     }
 
     @ApiOperation(value = "특정 댓글의 대댓글 전체 조회")
     @GetMapping("/comments/{commentId}/replies")
-    public CommonResponse<List<ReplyResponseDto>> getReplies(@PathVariable Long articleId, @PathVariable Long commentId) {
-        return ApiUtils.success(200, commentService.getReplies(articleId, commentId));
+    public CommonResponse<List<ReplyResponseDto>> getReplies(@PathVariable Long articleId, @PathVariable Long commentId, @RequestParam Long replyId, @RequestParam Integer size) {
+        return ApiUtils.success(200, commentService.getReplies(articleId, commentId, replyId, size));
     }
 
     @ApiOperation(value = "댓글 삭제")

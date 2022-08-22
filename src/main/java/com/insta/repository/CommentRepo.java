@@ -2,14 +2,23 @@ package com.insta.repository;
 
 import com.insta.model.Article;
 import com.insta.model.Comment;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface CommentRepo extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByArticleAndParent(Article article, Comment parent);
 
-    List<Comment> findAllByParent(Comment comment);
+    @Query("select c from Comment c " +
+            "where c.article = :article and c.parent is null and c.id < :id " +
+            "order by c.id desc")
+    Slice<Comment> findAllOrderByIdDesc(@Param("id") Long id, @Param("article") Article article, Pageable pageable);
+
+    @Query("select c from Comment c " +
+            "where c.parent = :comment and c.id < :replyId " +
+            "order by c.id desc")
+    Slice<Comment> findAllRepliesByParent(@Param("comment") Comment comment, @Param("replyId") Long replyId, Pageable ofSize);
 }

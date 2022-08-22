@@ -11,6 +11,8 @@ import com.insta.model.Comment;
 import com.insta.model.User;
 import com.insta.repository.CommentRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -34,17 +36,17 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentResponseDto> getComments(Long articleId) {
+    public List<CommentResponseDto> getComments(Long articleId, Long commentId, Integer size) {
         Article article = articleService.exists(articleId);
-        List<Comment> commentList = commentRepo.findAllByArticleAndParent(article, null);
+        Slice<Comment> commentList = commentRepo.findAllOrderByIdDesc(commentId, article, Pageable.ofSize(size));
         return commentList.stream().map(CommentResponseDto::from)
                 .collect(Collectors.toList());
     }
 
-    public List<ReplyResponseDto> getReplies(Long articleId, Long commentId) {
+    public List<ReplyResponseDto> getReplies(Long articleId, Long commentId, Long replyId, Integer size) {
         articleService.exists(articleId);
         Comment comment = exists(commentId);
-        List<Comment> replyList = commentRepo.findAllByParent(comment);
+        Slice<Comment> replyList = commentRepo.findAllRepliesByParent(comment, replyId, Pageable.ofSize(size));
         return replyList.stream().map(ReplyResponseDto::from)
                 .collect(Collectors.toList());
     }
