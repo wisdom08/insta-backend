@@ -3,6 +3,7 @@ package com.insta.controller;
 import com.insta.dto.article.ArticleDetailResponseDto;
 import com.insta.dto.article.ArticleRequestDto;
 import com.insta.dto.article.ArticleResponseDto;
+import com.insta.dto.article.LikesResponseDto;
 import com.insta.global.response.ApiUtils;
 import com.insta.global.response.CommonResponse;
 import com.insta.service.ArticleService;
@@ -55,10 +56,22 @@ public class ArticleController {
         return ApiUtils.success(200, null);
     }
 
+    @ApiOperation(value = "게시글 좋아요")
     @PostMapping("/{articleId}/likes")
     public CommonResponse<?> likeArticle(@PathVariable Long articleId) {
         articleService.toggleLike(articleId);
         return ApiUtils.success(200, null);
     }
 
+    @ApiOperation(value = "각 유저가 등록한 글 전체 조회")
+    @GetMapping("/feed/{username}")
+    public CommonResponse<List<ArticleResponseDto>> getPersonalFeed(@RequestParam Long articleId, @RequestParam Integer size, @PathVariable String username) {
+        return ApiUtils.success(200, articleService.getPersonalFeed(articleId, size, username));
+    }
+
+    @ApiOperation(value = "로그인한 유저가 좋아요 한 글 조회")
+    @GetMapping("/likes")
+    public CommonResponse<List<LikesResponseDto>> getArticlesLiked() {
+        return ApiUtils.success(200, articleService.getArticlesLiked());
+    }
 }

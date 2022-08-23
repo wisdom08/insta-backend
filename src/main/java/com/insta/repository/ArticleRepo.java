@@ -1,6 +1,7 @@
 package com.insta.repository;
 
 import com.insta.model.Article;
+import com.insta.model.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,8 @@ public interface ArticleRepo extends JpaRepository<Article, Long>{
             "order by a.id desc")
     Slice<Article> findAllOrderByIdDesc(@Param("id") Long id, Pageable pageable);
 
+    @Query("select a from Article a " +
+            "where a.id < :id and a.user = :user " +
+            "order by a.id desc")
+    Slice<Article> findAllOrderByUserDesc(@Param("id") Long id, Pageable pageable, @Param("user") User user);
 }
