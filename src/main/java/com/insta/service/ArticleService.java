@@ -7,8 +7,10 @@ import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
 import com.insta.model.Article;
+import com.insta.model.Heart;
 import com.insta.model.User;
 import com.insta.repository.ArticleRepo;
+import com.insta.repository.LikeRepo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,10 +25,12 @@ import java.util.stream.Collectors;
 public class ArticleService {
     private final ArticleRepo articleRepo;
     private final UserService userService;
+    private final LikeRepo likeRepo;
 
-    public ArticleService(ArticleRepo articleRepo, UserService userService) {
+    public ArticleService(ArticleRepo articleRepo, UserService userService, LikeRepo likeRepo) {
         this.articleRepo = articleRepo;
         this.userService = userService;
+        this.likeRepo = likeRepo;
     }
 
     public void createArticle (ArticleRequestDto requestDto){
@@ -60,6 +64,7 @@ public class ArticleService {
         return articleList.stream().map(ArticleResponseDto::from).collect(Collectors.toList());
     }
 
+    @Transactional
     public ArticleDetailResponseDto getArticle(Long articleId) {
         return articleRepo.findById(articleId)
                 .map(ArticleDetailResponseDto::from)
@@ -74,5 +79,20 @@ public class ArticleService {
     private String getCurrentUsername() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ((UserDetails)principal).getUsername();
+    }
+
+    @Transactional
+    public void toggleLike(Long articleId) {
+
+        User user = userService.exists(getCurrentUsername());
+        Article article = exists(articleId);
+
+        likeRepo.findByUserAndArticle(user, article).ifPresentOrElse(
+                likeRepo::delete
+                ,
+                () -> {
+                    Heart heart = likeRepo.save(Heart.Like(user, article));
+                    article.addHearts(heart);
+                });
     }
 }

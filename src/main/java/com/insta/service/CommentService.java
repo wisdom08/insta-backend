@@ -8,8 +8,10 @@ import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
 import com.insta.model.Article;
 import com.insta.model.Comment;
+import com.insta.model.Heart;
 import com.insta.model.User;
 import com.insta.repository.CommentRepo;
+import com.insta.repository.LikeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,6 +30,7 @@ public class CommentService {
     private final CommentRepo commentRepo;
     private final ArticleService articleService;
     private final UserService userService;
+    private final LikeRepo likeRepo;
 
     public void createComment(Long articleId, CommentRequestDto commentRequestDto) {
         User user = userService.exists(getCurrentUsername());
@@ -43,6 +46,7 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public List<ReplyResponseDto> getReplies(Long articleId, Long commentId, Long replyId, Integer size) {
         articleService.exists(articleId);
         Comment comment = exists(commentId);
@@ -90,5 +94,18 @@ public class CommentService {
         return ((UserDetails)principal).getUsername();
     }
 
+    @Transactional
+    public void toggleLike(Long articleId, Long commentId) {
+        articleService.exists(articleId);
+        User user = userService.exists(getCurrentUsername());
+        Comment comment = exists(commentId);
 
+        likeRepo.findByUserAndComment(user, comment).ifPresentOrElse(
+                likeRepo::delete
+                ,
+                () -> {
+                    Heart heart = likeRepo.save(Heart.Like(user, comment));
+                    comment.addHearts(heart);
+                });
+    }
 }
