@@ -3,6 +3,7 @@ package com.insta.service;
 import com.insta.dto.article.ArticleDetailResponseDto;
 import com.insta.dto.article.ArticleRequestDto;
 import com.insta.dto.article.ArticleResponseDto;
+import com.insta.dto.article.LikesResponseDto;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
@@ -95,4 +96,21 @@ public class ArticleService {
                     article.addHearts(heart);
                 });
     }
+
+    @Transactional
+    public List<ArticleResponseDto> getPersonalFeed(Long articleId, Integer size, String username) {
+        User user = userService.exists(username);
+
+        return articleRepo.findAllOrderByUserDesc(articleId, Pageable.ofSize(size), user)
+                .stream()
+                .map(ArticleResponseDto::from)
+                .toList();
+    }
+
+    @Transactional
+    public List<LikesResponseDto> getArticlesLiked() {
+        User user = userService.exists(getCurrentUsername());
+        return user.getHaerts().stream().map(LikesResponseDto::from).toList();
+    }
+
 }
