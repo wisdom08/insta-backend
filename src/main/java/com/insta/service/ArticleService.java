@@ -130,4 +130,12 @@ public class ArticleService {
         return user.getHaerts().stream().map(LikesResponseDto::from).toList();
     }
 
+    @Transactional
+    public List<ArticleResponseDto> findAllByHashtag(String hashtag) {
+        return articleRepo.findAll().stream()
+                .filter(article -> article.hasTag(hashtag))
+                .map(ArticleResponseDto::from)
+                .collect(Collectors.toList())
+                ;
+    }
 }

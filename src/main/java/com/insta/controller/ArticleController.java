@@ -75,4 +75,10 @@ public class ArticleController {
     public CommonResponse<List<LikesResponseDto>> getArticlesLiked() {
         return ApiUtils.success(200, articleService.getArticlesLiked());
     }
+
+    @ApiOperation(value = "해시태그 기준 검색 조회")
+    @GetMapping(params = {"hashtag"})
+    public CommonResponse<List<ArticleResponseDto>> getFilteredPosts(@RequestParam String hashtag) {
+        return ApiUtils.success(200, articleService.findAllByHashtag(hashtag));
+    }
 }

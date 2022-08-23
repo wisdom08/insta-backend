@@ -47,4 +47,13 @@ public class Article extends Timestamped{
         this.hearts.add(heart);
         heart.belongTo(this);
     }
+
+    public boolean hasTag(String tagName) {
+        for (HashtagVariable hashtagVariable : hashtagVariables) {
+            if (hashtagVariable.getHashtag().getName().equals(tagName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
