@@ -11,8 +11,10 @@ import com.insta.jwt.JwtTokenProvider;
 import com.insta.model.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 
 @Service
@@ -35,9 +37,13 @@ public class UserService {
 
         validatePassword(loginRequestDto.getPassword(), user.getPassword());
         String accessToken = this.jwtTokenProvider.createToken(username);
+        String refreshToken = this.jwtTokenProvider.createRefreshToken(); // 리프레쉬 토큰 발급
 
-        return LoginResponseDto.toDto(user.getId(), user.getUsername(), accessToken);
+
+        return LoginResponseDto.toDto(user.getId(), user.getUsername(), accessToken, refreshToken);
     }
+
+    // SignService
 
     private void validatePassword(String inputPassword, String savedPassword) {
         boolean passwordMatching = passwordEncoder.matches(inputPassword, savedPassword);

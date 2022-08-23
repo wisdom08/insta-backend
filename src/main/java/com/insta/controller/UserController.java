@@ -7,13 +7,12 @@ import com.insta.global.response.ApiUtils;
 import com.insta.global.response.CommonResponse;
 import com.insta.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,4 +37,17 @@ public class UserController {
         userService.registerUser(signupRequestDto, errors);
         return ApiUtils.success(201, null);
     }
+
+//    @ApiOperation(value = "토큰 재발급", notes = "토큰을 재발급한다")
+//    @PostMapping(value = "/refresh")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "access-token", required = true, dataType = "String", paramType = "header"),
+//            @ApiImplicitParam(name = "REFRESH-TOKEN", value = "refresh-token", required = true, dataType = "String", paramType = "header")
+//    })
+//    public SingleResult<LoginResponseDto> refreshToken(
+//            @RequestHeader(value="X-AUTH-TOKEN") String token,
+//            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
+//        return responseService.handleSingleResult(signService.refreshToken(token, refreshToken));
+//    }
+
 }

@@ -1,9 +1,6 @@
 package com.insta.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +20,7 @@ public class JwtTokenProvider {
 
     //jwt 토큰 유효 기간 30분 설정
     private static final long TOKEN_VALID_TIME = 300000L * 6;
+    private static final long REFRESH_TOKEN_VALID_TIME = 600000L * 6 * 24;
     private final UserDetailsService userDetailsService;
 
     @PostConstruct
@@ -36,6 +34,16 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims).setIssuedAt(now).setExpiration(new Date(now.getTime() + TOKEN_VALID_TIME))
                 .signWith(SignatureAlgorithm.HS256, this.secretKey).compact();
+    }
+
+    // jwt refresh 토큰 생성
+    public String createRefreshToken() {
+        Date now = new Date();
+        return Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     public Authentication getAuthentication(String token) {
