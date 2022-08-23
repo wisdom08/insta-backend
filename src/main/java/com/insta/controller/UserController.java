@@ -1,20 +1,24 @@
 package com.insta.controller;
 
 import com.insta.dto.user.LoginRequestDto;
-import com.insta.dto.user.LoginResponseDto;
 import com.insta.dto.user.SignupRequestDto;
 import com.insta.global.response.ApiUtils;
 import com.insta.global.response.CommonResponse;
 import com.insta.service.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 
 @Api(tags = "유저 API")
 @RequiredArgsConstructor
@@ -26,9 +30,13 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/signin")
-    public CommonResponse<?> doLogin(@RequestBody LoginRequestDto loginRequestDto){
-        LoginResponseDto loginResponseDto = userService.login(loginRequestDto);
-        return ApiUtils.success(200, loginResponseDto);
+    public ResponseEntity<CommonResponse<Object>> doLogin(@RequestBody LoginRequestDto loginRequestDto){
+        HashMap<Object, Object> map = userService.login(loginRequestDto);
+
+        Object loginResponseDto = map.get("loginResponseDto");
+        ResponseCookie responseCookie = (ResponseCookie)map.get("responseCookie");
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(ApiUtils.success(200, loginResponseDto));
     }
 
     @ApiOperation(value = "회원가입")
@@ -37,17 +45,4 @@ public class UserController {
         userService.registerUser(signupRequestDto, errors);
         return ApiUtils.success(201, null);
     }
-
-//    @ApiOperation(value = "토큰 재발급", notes = "토큰을 재발급한다")
-//    @PostMapping(value = "/refresh")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "access-token", required = true, dataType = "String", paramType = "header"),
-//            @ApiImplicitParam(name = "REFRESH-TOKEN", value = "refresh-token", required = true, dataType = "String", paramType = "header")
-//    })
-//    public SingleResult<LoginResponseDto> refreshToken(
-//            @RequestHeader(value="X-AUTH-TOKEN") String token,
-//            @RequestHeader(value="REFRESH-TOKEN") String refreshToken ) {
-//        return responseService.handleSingleResult(signService.refreshToken(token, refreshToken));
-//    }
-
 }
