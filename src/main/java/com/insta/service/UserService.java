@@ -1,6 +1,7 @@
 package com.insta.service;
 
 
+import com.insta.dto.user.InfoResponseDto;
 import com.insta.dto.user.LoginRequestDto;
 import com.insta.dto.user.LoginResponseDto;
 import com.insta.dto.user.SignupRequestDto;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 
 @Service
@@ -85,5 +87,11 @@ public class UserService {
     public User exists(String username) {
         return userRepository.findByUsername(username).orElseThrow(() ->
                 new EntityNotFoundException(ErrorCode.NOTFOUND_USER));
+    }
+
+    @Transactional
+    public InfoResponseDto getInfo(String username) {
+        User user = exists(username);
+        return InfoResponseDto.makeInfoDto(username, user.getUserintro(), user.getArticles().size());
     }
 }

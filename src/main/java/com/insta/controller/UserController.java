@@ -1,5 +1,6 @@
 package com.insta.controller;
 
+import com.insta.dto.user.InfoResponseDto;
 import com.insta.dto.user.LoginRequestDto;
 import com.insta.dto.user.SignupRequestDto;
 import com.insta.global.response.ApiUtils;
@@ -12,10 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -45,4 +43,11 @@ public class UserController {
         userService.registerUser(signupRequestDto, errors);
         return ApiUtils.success(201, null);
     }
+
+    @ApiOperation(value = "유저 정보 조회")
+    @GetMapping("/{username}")
+    public CommonResponse<InfoResponseDto> getInfo(@PathVariable String username) {
+        return ApiUtils.success(200, userService.getInfo(username));
+    }
+
 }
