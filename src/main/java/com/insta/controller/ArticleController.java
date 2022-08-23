@@ -23,8 +23,8 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 전체 조회")
     @GetMapping()
-    public CommonResponse<List<ArticleResponseDto>> getArticles() {
-        List<ArticleResponseDto> articles = articleService.getArticles();
+    public CommonResponse<List<ArticleResponseDto>> getArticles(@RequestParam Long articleId, @RequestParam Integer size) {
+        List<ArticleResponseDto> articles = articleService.getArticles(articleId, size);
         return ApiUtils.success(200, articles);
     }
 
@@ -52,6 +52,12 @@ public class ArticleController {
     @DeleteMapping("/{articleId}")
     public CommonResponse<?> deleteArticles(@PathVariable Long articleId) {
         articleService.deleteArticles(articleId);
+        return ApiUtils.success(200, null);
+    }
+
+    @PostMapping("/{articleId}/likes")
+    public CommonResponse<?> likeArticle(@PathVariable Long articleId) {
+        articleService.toggleLike(articleId);
         return ApiUtils.success(200, null);
     }
 

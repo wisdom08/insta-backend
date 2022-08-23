@@ -8,9 +8,13 @@ import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
 import com.insta.model.Article;
 import com.insta.model.Comment;
+import com.insta.model.Heart;
 import com.insta.model.User;
 import com.insta.repository.CommentRepo;
+import com.insta.repository.LikeRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,7 @@ public class CommentService {
     private final CommentRepo commentRepo;
     private final ArticleService articleService;
     private final UserService userService;
+    private final LikeRepo likeRepo;
 
     public void createComment(Long articleId, CommentRequestDto commentRequestDto) {
         User user = userService.exists(getCurrentUsername());
@@ -34,17 +39,18 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentResponseDto> getComments(Long articleId) {
+    public List<CommentResponseDto> getComments(Long articleId, Long commentId, Integer size) {
         Article article = articleService.exists(articleId);
-        List<Comment> commentList = commentRepo.findAllByArticleAndParent(article, null);
+        Slice<Comment> commentList = commentRepo.findAllOrderByIdDesc(commentId, article, Pageable.ofSize(size));
         return commentList.stream().map(CommentResponseDto::from)
                 .collect(Collectors.toList());
     }
 
-    public List<ReplyResponseDto> getReplies(Long articleId, Long commentId) {
+    @Transactional
+    public List<ReplyResponseDto> getReplies(Long articleId, Long commentId, Long replyId, Integer size) {
         articleService.exists(articleId);
         Comment comment = exists(commentId);
-        List<Comment> replyList = commentRepo.findAllByParent(comment);
+        Slice<Comment> replyList = commentRepo.findAllRepliesByParent(comment, replyId, Pageable.ofSize(size));
         return replyList.stream().map(ReplyResponseDto::from)
                 .collect(Collectors.toList());
     }
@@ -88,5 +94,18 @@ public class CommentService {
         return ((UserDetails)principal).getUsername();
     }
 
+    @Transactional
+    public void toggleLike(Long articleId, Long commentId) {
+        articleService.exists(articleId);
+        User user = userService.exists(getCurrentUsername());
+        Comment comment = exists(commentId);
 
+        likeRepo.findByUserAndComment(user, comment).ifPresentOrElse(
+                likeRepo::delete
+                ,
+                () -> {
+                    Heart heart = likeRepo.save(Heart.Like(user, comment));
+                    comment.addHearts(heart);
+                });
+    }
 }

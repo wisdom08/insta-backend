@@ -23,6 +23,9 @@ public class Article extends Timestamped{
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    private final List<Heart> hearts = new ArrayList<>();
+
     protected Article() {}
 
     private Article(String content, User user){
@@ -38,4 +41,8 @@ public class Article extends Timestamped{
         this.content = content;
     }
 
+    public void addHearts(Heart heart) {
+        this.hearts.add(heart);
+        heart.belongTo(this);
+    }
 }
