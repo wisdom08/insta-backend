@@ -30,6 +30,9 @@ public class Comment extends Timestamped {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private final List<Comment> replies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    private final List<Heart> hearts = new ArrayList<>();
+
     protected Comment() {}
 
     private Comment(String content, Article article, User user) {
@@ -51,5 +54,10 @@ public class Comment extends Timestamped {
 
     public static Comment createReply(Article article, Comment parentComment, String content, User user) {
         return new Comment(content, article, parentComment, user);
+    }
+
+    public void addHearts(Heart heart) {
+        this.hearts.add(heart);
+        heart.belongTo(this);
     }
 }

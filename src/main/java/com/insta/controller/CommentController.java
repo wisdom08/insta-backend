@@ -61,4 +61,9 @@ public class CommentController {
         return ApiUtils.success(200, null);
     }
 
+    @PostMapping("/comments/{commentId}/likes")
+    public CommonResponse<?> likeComment(@PathVariable Long commentId, @PathVariable Long articleId) {
+        commentService.toggleLike(articleId, commentId);
+        return ApiUtils.success(200, null);
+    }
 }

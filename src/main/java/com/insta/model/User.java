@@ -4,6 +4,8 @@ package com.insta.model;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -20,6 +22,9 @@ public class User extends Timestamped {
 
     @Column
     private String userintro;
+
+    @OneToMany(mappedBy = "user")
+    private final List<Heart> haerts = new ArrayList<>();
 
     protected User() {}
 
