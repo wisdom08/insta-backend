@@ -11,9 +11,12 @@ import com.insta.jwt.JwtTokenProvider;
 import com.insta.model.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +32,30 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public HashMap<Object, Object> login(LoginRequestDto loginRequestDto) {
         String username = loginRequestDto.getUsername();
         User user = exists(username);
-
         validatePassword(loginRequestDto.getPassword(), user.getPassword());
-        String accessToken = this.jwtTokenProvider.createToken(username);
 
-        return LoginResponseDto.toDto(user.getId(), user.getUsername(), accessToken);
+        return makeLoginMap(username, user);
+    }
+
+    private HashMap<Object, Object> makeLoginMap(String username, User user) {
+        String accessToken = jwtTokenProvider.createToken(username);
+        String refreshToken = jwtTokenProvider.createRefreshToken();
+
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken",refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(60)
+                .build();
+
+        HashMap<Object, Object> map = new HashMap<>();
+        LoginResponseDto loginResponseDto = LoginResponseDto.toDto(user.getId(), user.getUsername(), accessToken);
+        map.put("loginResponseDto", loginResponseDto);
+        map.put("responseCookie", responseCookie);
+        return map;
     }
 
     private void validatePassword(String inputPassword, String savedPassword) {
