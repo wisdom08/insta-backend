@@ -61,6 +61,7 @@ public class CommentController {
         return ApiUtils.success(200, null);
     }
 
+    @ApiOperation(value = "댓글/대댓글 좋아요")
     @PostMapping("/comments/{commentId}/likes")
     public CommonResponse<?> likeComment(@PathVariable Long commentId, @PathVariable Long articleId) {
         commentService.toggleLike(articleId, commentId);

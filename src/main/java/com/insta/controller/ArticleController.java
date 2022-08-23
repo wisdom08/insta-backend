@@ -55,6 +55,7 @@ public class ArticleController {
         return ApiUtils.success(200, null);
     }
 
+    @ApiOperation(value = "게시글 좋아요")
     @PostMapping("/{articleId}/likes")
     public CommonResponse<?> likeArticle(@PathVariable Long articleId) {
         articleService.toggleLike(articleId);
