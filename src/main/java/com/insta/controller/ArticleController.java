@@ -37,8 +37,9 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 등록")
     @PostMapping
-    public CommonResponse<?> createArticles(@RequestBody ArticleRequestDto requestDto){
-        articleService.createArticle(requestDto);
+    public CommonResponse<?> createArticles(@RequestBody ArticleRequestDto requestDto,
+                                            @RequestParam(value = "hashtags", defaultValue = "false") List<String> hashtags){
+        articleService.createArticle(requestDto, hashtags);
         return ApiUtils.success(201, null);
     }
 
