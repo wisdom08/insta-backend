@@ -77,7 +77,7 @@ public class ArticleController {
     }
 
     @ApiOperation(value = "해시태그 기준 검색 조회")
-    @GetMapping(params = {"hashtag"})
+    @GetMapping("/search")
     public CommonResponse<List<ArticleResponseDto>> getFilteredPosts(@RequestParam String hashtag) {
         return ApiUtils.success(200, articleService.findAllByHashtag(hashtag));
     }
