@@ -15,11 +15,15 @@
 ## 전체 기능
 - 인증
 - 게시판 CRUD
-- AWS S3 이미지 업로드
-- 댓글 CRUD
-- 대댓글 CRUD
-
-## ERD
+- AWS S3 이용 이미지 처리
+- 댓글/대댓글 CRD
+- 해시태그 기능
+- 좋아요 기능
+- 무한 스크롤(slice)
+- 유저 아이디 별 작성한 글 조회
+- 로그인한 유저가 좋아요 한 글 조회
+- 내 정보 수정
+  - 소개, 프로필사진
 
 ## API
 https://insta-backend5.herokuapp.com/swagger-ui/
