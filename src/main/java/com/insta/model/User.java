@@ -21,10 +21,13 @@ public class User extends Timestamped {
     private String password;
 
     @Column
-    private String userintro;
+    private final String userintro = "";
 
     @OneToMany(mappedBy = "user")
     private final List<Heart> haerts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private final List<Article> articles = new ArrayList<>();
 
     protected User() {}
 
