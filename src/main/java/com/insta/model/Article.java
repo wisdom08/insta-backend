@@ -3,8 +3,7 @@ package com.insta.model;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Entity
@@ -26,6 +25,9 @@ public class Article extends Timestamped{
     @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private final List<Heart> hearts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    public List<HashtagVariable> hashtagVariables;
+
     protected Article() {}
 
     private Article(String content, User user){
@@ -44,5 +46,14 @@ public class Article extends Timestamped{
     public void addHearts(Heart heart) {
         this.hearts.add(heart);
         heart.belongTo(this);
+    }
+
+    public boolean hasTag(String tagName) {
+        for (HashtagVariable hashtagVariable : hashtagVariables) {
+            if (hashtagVariable.getHashtag().getName().equals(tagName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -4,12 +4,15 @@ import com.insta.model.Article;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ArticleDetailResponseDto {
     private Long id;
     private String content;
     private int numberOfLikes;
+    private final List<String> hashtags = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -25,5 +28,9 @@ public class ArticleDetailResponseDto {
 
     public static ArticleDetailResponseDto from(Article entity) {
         return new ArticleDetailResponseDto(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getModifiedAt());
+    }
+
+    public void addHashtag(String hashtags) {
+        this.hashtags.add(hashtags);
     }
 }

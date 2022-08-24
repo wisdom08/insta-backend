@@ -3,6 +3,7 @@ package com.insta.controller;
 import com.insta.dto.article.ArticleDetailResponseDto;
 import com.insta.dto.article.ArticleRequestDto;
 import com.insta.dto.article.ArticleResponseDto;
+import com.insta.dto.article.LikesResponseDto;
 import com.insta.global.response.ApiUtils;
 import com.insta.global.response.CommonResponse;
 import com.insta.service.ArticleService;
@@ -36,8 +37,9 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 등록")
     @PostMapping
-    public CommonResponse<?> createArticles(@RequestBody ArticleRequestDto requestDto){
-        articleService.createArticle(requestDto);
+    public CommonResponse<?> createArticles(@RequestBody ArticleRequestDto requestDto,
+                                            @RequestParam(value = "hashtags", defaultValue = "false") List<String> hashtags){
+        articleService.createArticle(requestDto, hashtags);
         return ApiUtils.success(201, null);
     }
 
@@ -62,4 +64,21 @@ public class ArticleController {
         return ApiUtils.success(200, null);
     }
 
+    @ApiOperation(value = "각 유저가 등록한 글 전체 조회")
+    @GetMapping("/feed/{username}")
+    public CommonResponse<List<ArticleResponseDto>> getPersonalFeed(@RequestParam Long articleId, @RequestParam Integer size, @PathVariable String username) {
+        return ApiUtils.success(200, articleService.getPersonalFeed(articleId, size, username));
+    }
+
+    @ApiOperation(value = "로그인한 유저가 좋아요 한 글 조회")
+    @GetMapping("/likes")
+    public CommonResponse<List<LikesResponseDto>> getArticlesLiked() {
+        return ApiUtils.success(200, articleService.getArticlesLiked());
+    }
+
+    @ApiOperation(value = "해시태그 기준 검색 조회")
+    @GetMapping(params = {"hashtag"})
+    public CommonResponse<List<ArticleResponseDto>> getFilteredPosts(@RequestParam String hashtag) {
+        return ApiUtils.success(200, articleService.findAllByHashtag(hashtag));
+    }
 }
