@@ -13,6 +13,7 @@
   - 2022.08.19 ~ 2022.08.25
 
 ## 전체 기능
+> 구현한 기능에 대한 좀 더 상세한 내용은 [이슈 탭](https://github.com/wisdom08/insta-backend/issues)을 확인해주세요.
 - 인증
 - 게시판 CRUD
 - AWS S3 이용 이미지 처리
