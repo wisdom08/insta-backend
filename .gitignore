@@ -1,4 +1,5 @@
 application.yaml
+application-aws.yml
 
 HELP.md
 .gradle
