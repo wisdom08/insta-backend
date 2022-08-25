@@ -1,5 +1,6 @@
 package com.insta.controller;
 
+import com.insta.dto.user.InfoRequestDto;
 import com.insta.dto.user.InfoResponseDto;
 import com.insta.dto.user.LoginRequestDto;
 import com.insta.dto.user.SignupRequestDto;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -50,4 +52,10 @@ public class UserController {
         return ApiUtils.success(200, userService.getInfo(username));
     }
 
+    @ApiOperation(value = "프로필사진/bio 수정")
+    @PutMapping("/accounts")
+    public CommonResponse<?> updateInfo(InfoRequestDto infoRequestDto, MultipartFile[] image) {
+        userService.updateInfo(infoRequestDto, image);
+        return ApiUtils.success(200, null);
+    }
 }
