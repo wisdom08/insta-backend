@@ -11,6 +11,11 @@ import java.util.List;
 @Entity
 public class User extends Timestamped {
 
+    @PrePersist
+    public void prePersist() {
+        this.bio = this.bio == null ? "" : this.bio;
+    }
+
     @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -20,8 +25,7 @@ public class User extends Timestamped {
     @Column(nullable = false)
     private String password;
 
-    @Column
-    private final String userintro = "";
+    private String bio;
 
     @OneToMany(mappedBy = "user")
     private final List<Heart> haerts = new ArrayList<>();
@@ -38,5 +42,9 @@ public class User extends Timestamped {
 
     public static User createUser(String username, String password) {
         return new User(username, password);
+    }
+
+    public void updateUser(String bio) {
+        this.bio = bio;
     }
 }
