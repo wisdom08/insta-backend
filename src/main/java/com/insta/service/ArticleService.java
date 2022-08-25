@@ -11,34 +11,36 @@ import com.insta.model.*;
 import com.insta.repository.ArticleRepo;
 import com.insta.repository.HashtagVariableRepo;
 import com.insta.repository.LikeRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ArticleService {
     private final ArticleRepo articleRepo;
     private final UserService userService;
     private final LikeRepo likeRepo;
     private final HashtagVariableRepo hashtagVariableRepo;
-
-    public ArticleService(ArticleRepo articleRepo, UserService userService, LikeRepo likeRepo, HashtagVariableRepo hashtagVariableRepo) {
-        this.articleRepo = articleRepo;
-        this.userService = userService;
-        this.likeRepo = likeRepo;
-        this.hashtagVariableRepo = hashtagVariableRepo;
-    }
+    private final S3Service s3Service;
 
     @Transactional
-    public void createArticle(ArticleRequestDto requestDto, List<String> hashtagNames) {
+    public void createArticle(ArticleRequestDto requestDto, List<String> hashtagNames, MultipartFile[] articleImage) {
         User user = userService.exists(getCurrentUsername());
         Article article = articleRepo.save(Article.createArticle(requestDto.getContent(), user));
+
+        if (articleImage != null) {
+            s3Service.uploadFile(articleImage, String.valueOf(ImageTarget.ARTICLE), article.getId());
+        }
+
         for (String name : hashtagNames) {
             if (!name.equals("false")) {
                 Hashtag hashtag = Hashtag.createHashTag(name);
@@ -48,15 +50,21 @@ public class ArticleService {
     }
 
     @Transactional
-    public void updateArticles(ArticleRequestDto requestDto, Long articleId) {
+    public void updateArticles(ArticleRequestDto requestDto, Long articleId, MultipartFile[] articleImage) {
         Article article = isAuthorized(articleId);
         article.updateArticle(requestDto.getContent());
+
+        s3Service.deleteFile(ImageTarget.ARTICLE, article.getId());
+        if (articleImage != null) {
+            s3Service.uploadFile(articleImage, String.valueOf(ImageTarget.ARTICLE), article.getId());
+        }
     }
 
     @Transactional
     public void deleteArticles(Long articleId) {
         isAuthorized(articleId);
         articleRepo.deleteById(articleId);
+        s3Service.deleteFile(ImageTarget.ARTICLE, articleId);
     }
 
     private Article isAuthorized(Long articleId) {
@@ -71,14 +79,15 @@ public class ArticleService {
     @Transactional
     public List<ArticleResponseDto> getArticles(Long articleId, Integer size) {
         Slice<Article> articleList = articleRepo.findAllOrderByIdDesc(articleId, Pageable.ofSize(size));
-        return articleList.stream().map(ArticleResponseDto::from).collect(Collectors.toList());
+        return articleList.stream().map(entity ->
+                ArticleResponseDto.from(entity, s3Service.getImages(ImageTarget.ARTICLE, entity.getId()))).collect(Collectors.toList());
     }
 
     @Transactional
     public ArticleDetailResponseDto getArticle(Long articleId) {
         Article article = exists(articleId);
         ArticleDetailResponseDto articleDetailResponseDto = articleRepo.findById(articleId)
-                .map(ArticleDetailResponseDto::from)
+                .map(entity -> ArticleDetailResponseDto.from(entity, s3Service.getImages(ImageTarget.ARTICLE, entity.getId())))
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTFOUND_ARTICLE));
 
         List<HashtagVariable> hashtagVariables = hashtagVariableRepo.findAllByArticle(article);
@@ -120,7 +129,7 @@ public class ArticleService {
 
         return articleRepo.findAllOrderByUserDesc(articleId, Pageable.ofSize(size), user)
                 .stream()
-                .map(ArticleResponseDto::from)
+                .map(entity -> ArticleResponseDto.from(entity, s3Service.getImages(ImageTarget.ARTICLE, entity.getId())))
                 .toList();
     }
 
@@ -134,7 +143,7 @@ public class ArticleService {
     public List<ArticleResponseDto> findAllByHashtag(String hashtag) {
         return articleRepo.findAll().stream()
                 .filter(article -> article.hasTag(hashtag))
-                .map(ArticleResponseDto::from)
+                .map(entity -> ArticleResponseDto.from(entity, s3Service.getImages(ImageTarget.ARTICLE, entity.getId())))
                 .collect(Collectors.toList())
                 ;
     }

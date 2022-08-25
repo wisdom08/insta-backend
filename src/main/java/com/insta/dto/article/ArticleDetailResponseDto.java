@@ -1,6 +1,7 @@
 package com.insta.dto.article;
 
 import com.insta.model.Article;
+import com.insta.model.Image;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -15,19 +16,23 @@ public class ArticleDetailResponseDto {
     private final List<String> hashtags = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private Object[] images;
 
     protected ArticleDetailResponseDto() {}
 
-    public ArticleDetailResponseDto(Long id, String content, int numberOfLikes, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public ArticleDetailResponseDto(Long id, String content, int numberOfLikes, LocalDateTime createdAt, LocalDateTime modifiedAt, List<Image> images) {
         this.id = id;
         this.content = content;
         this.numberOfLikes = numberOfLikes;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.images = images.stream()
+                .map(Image::getImageUrl)
+                .toArray();
     }
 
-    public static ArticleDetailResponseDto from(Article entity) {
-        return new ArticleDetailResponseDto(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getModifiedAt());
+    public static ArticleDetailResponseDto from(Article entity, List<Image> images) {
+        return new ArticleDetailResponseDto(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getModifiedAt(), images);
     }
 
     public void addHashtag(String hashtags) {
