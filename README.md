@@ -11,6 +11,8 @@
   - 조상우 https://github.com/csw96
 - 개발 기간
   - 2022.08.19 ~ 2022.08.25
+## 트러블 슈팅 정리
+[트러블슈팅 정리용 위키](https://github.com/wisdom08/insta-backend/wiki)
 
 ## 전체 기능
 > 구현한 기능에 대한 좀 더 상세한 내용은 [이슈 탭](https://github.com/wisdom08/insta-backend/issues)을 확인해주세요.
