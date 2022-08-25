@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,16 +38,16 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 등록")
     @PostMapping
-    public CommonResponse<?> createArticles(@RequestBody ArticleRequestDto requestDto,
+    public CommonResponse<?> createArticles(ArticleRequestDto requestDto, MultipartFile[] articleImage,
                                             @RequestParam(value = "hashtags", defaultValue = "false") List<String> hashtags){
-        articleService.createArticle(requestDto, hashtags);
+        articleService.createArticle(requestDto, hashtags, articleImage);
         return ApiUtils.success(201, null);
     }
 
     @ApiOperation(value = "게시글 수정")
     @PutMapping("/{articleId}")
-    public CommonResponse<?> updateArticles(@PathVariable Long articleId, @RequestBody ArticleRequestDto requestDto) {
-        articleService.updateArticles(requestDto, articleId);
+    public CommonResponse<?> updateArticles(@PathVariable Long articleId, ArticleRequestDto requestDto, MultipartFile[] articleImage) {
+        articleService.updateArticles(requestDto, articleId, articleImage);
         return ApiUtils.success(200, null);
     }
 
