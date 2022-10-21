@@ -1,6 +1,6 @@
 package com.insta.security;
 
-import com.insta.model.User;
+import com.insta.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

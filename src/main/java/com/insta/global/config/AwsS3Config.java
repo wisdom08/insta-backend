@@ -1,4 +1,4 @@
-package com.insta.config;
+package com.insta.global.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

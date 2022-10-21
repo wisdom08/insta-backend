@@ -2,7 +2,7 @@ package com.insta.security;
 
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
-import com.insta.model.User;
+import com.insta.domain.User;
 import com.insta.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

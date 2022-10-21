@@ -1,7 +1,7 @@
 package com.insta.repository;
 
-import com.insta.model.Article;
-import com.insta.model.HashtagVariable;
+import com.insta.domain.Article;
+import com.insta.domain.HashtagVariable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

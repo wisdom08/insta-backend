@@ -1,7 +1,7 @@
 package com.insta.dto.article;
 
-import com.insta.model.Article;
-import com.insta.model.Image;
+import com.insta.domain.Article;
+import com.insta.domain.Image;
 import lombok.Getter;
 
 import java.util.List;

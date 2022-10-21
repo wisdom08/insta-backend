@@ -7,7 +7,7 @@ import com.insta.dto.article.LikesResponseDto;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
-import com.insta.model.*;
+import com.insta.domain.*;
 import com.insta.repository.ArticleRepo;
 import com.insta.repository.HashtagVariableRepo;
 import com.insta.repository.LikeRepo;

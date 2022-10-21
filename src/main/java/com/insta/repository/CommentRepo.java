@@ -1,7 +1,7 @@
 package com.insta.repository;
 
-import com.insta.model.Article;
-import com.insta.model.Comment;
+import com.insta.domain.Article;
+import com.insta.domain.Comment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.insta.config;
+package com.insta.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

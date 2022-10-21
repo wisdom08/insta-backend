@@ -1,6 +1,6 @@
 package com.insta.dto.comment;
 
-import com.insta.model.Comment;
+import com.insta.domain.Comment;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

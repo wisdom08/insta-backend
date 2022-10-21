@@ -1,4 +1,4 @@
-package com.insta.model;
+package com.insta.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

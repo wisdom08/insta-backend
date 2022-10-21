@@ -1,4 +1,4 @@
-package com.insta.jwt;
+package com.insta.security.jwt;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;

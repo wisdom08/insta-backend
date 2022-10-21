@@ -1,6 +1,6 @@
 package com.insta.dto.article;
 
-import com.insta.model.Heart;
+import com.insta.domain.Heart;
 import lombok.Getter;
 
 @Getter

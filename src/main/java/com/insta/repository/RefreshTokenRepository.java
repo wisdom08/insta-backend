@@ -1,6 +1,6 @@
 package com.insta.repository;
 
-import com.insta.model.RefreshToken;
+import com.insta.domain.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
