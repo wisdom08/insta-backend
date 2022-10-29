@@ -30,8 +30,8 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/signin")
-    public ResponseEntity<CommonResponse<Object>> doLogin(@RequestBody SignInRequest signinRequest){
-        HashMap<Object, Object> map = userService.login(signinRequest);
+    public ResponseEntity<CommonResponse<Object>> signIn(@RequestBody SignInRequest signinRequest){
+        HashMap<Object, Object> map = userService.signIn(signinRequest);
 
         Object loginResponseDto = map.get("loginResponseDto");
         ResponseCookie responseCookie = (ResponseCookie)map.get("responseCookie");
@@ -42,8 +42,8 @@ public class UserController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/signup")
-    public CommonResponse<?> doSignup(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
-        userService.registerUser(signupRequest, errors);
+    public CommonResponse<?> signUp(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
+        userService.signUp(signupRequest, errors);
         return ResponseUtil.success(201, null);
     }
 

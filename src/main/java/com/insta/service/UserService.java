@@ -31,14 +31,14 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final S3Service s3Service;
 
-    public void registerUser(SignUpRequest signupRequest, Errors errors) {
+    public void signUp(SignUpRequest signupRequest, Errors errors) {
         validateUser(signupRequest, errors);
         User user = User.createUser(
             signupRequest.getUsername(), passwordEncoder.encode(signupRequest.getPassword()));
         userRepository.save(user);
     }
 
-    public HashMap<Object, Object> login(SignInRequest signinRequest) {
+    public HashMap<Object, Object> signIn(SignInRequest signinRequest) {
         String username = signinRequest.getUsername();
         User user = exists(username);
         validatePassword(signinRequest.getPassword(), user.getPassword());
