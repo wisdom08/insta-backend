@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface LikeRepo extends JpaRepository<Heart, Long> {
+public interface HeartRepository extends JpaRepository<Heart, Long> {
     Optional<Heart> findByUserAndArticle(User user, Article article);
     Optional<Heart> findByUserAndComment(User user, Comment comment);
 }

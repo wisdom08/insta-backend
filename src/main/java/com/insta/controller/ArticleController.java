@@ -1,10 +1,10 @@
 package com.insta.controller;
 
-import com.insta.dto.article.ArticleDetailResponseDto;
-import com.insta.dto.article.ArticleRequestDto;
-import com.insta.dto.article.ArticleResponseDto;
-import com.insta.dto.article.LikesResponseDto;
-import com.insta.global.response.ApiUtils;
+import com.insta.dto.article.ArticleDetailResponse;
+import com.insta.dto.article.ArticleRequest;
+import com.insta.dto.article.ArticleResponse;
+import com.insta.dto.article.HeartResponse;
+import com.insta.global.response.ResponseUtil;
 import com.insta.global.response.CommonResponse;
 import com.insta.service.ArticleService;
 import io.swagger.annotations.Api;
@@ -21,65 +21,65 @@ import java.util.List;
 @RequestMapping("/api/articles")
 public class ArticleController {
 
-    private final ArticleService articleService;
+    private ArticleService articleService;
 
     @ApiOperation(value = "게시글 전체 조회")
     @GetMapping()
-    public CommonResponse<List<ArticleResponseDto>> getArticles(@RequestParam Long articleId, @RequestParam Integer size) {
-        List<ArticleResponseDto> articles = articleService.getArticles(articleId, size);
-        return ApiUtils.success(200, articles);
+    public CommonResponse<List<ArticleResponse>> getArticles(@RequestParam Long articleId, @RequestParam Integer size) {
+        List<ArticleResponse> articles = articleService.getArticles(articleId, size);
+        return ResponseUtil.success(200, articles);
     }
 
     @ApiOperation(value = "특정 게시글 조회")
     @GetMapping("/{articleId}")
-    public CommonResponse<ArticleDetailResponseDto> getArticle(@PathVariable Long articleId) {
-        return ApiUtils.success(200, articleService.getArticle(articleId));
+    public CommonResponse<ArticleDetailResponse> getArticle(@PathVariable Long articleId) {
+        return ResponseUtil.success(200, articleService.getArticle(articleId));
     }
 
     @ApiOperation(value = "게시글 등록")
     @PostMapping
-    public CommonResponse<?> createArticles(ArticleRequestDto requestDto, MultipartFile[] articleImage,
+    public CommonResponse<?> createArticles(ArticleRequest requestDto, MultipartFile[] articleImage,
                                             @RequestParam(value = "hashtags", defaultValue = "false") List<String> hashtags){
         articleService.createArticle(requestDto, hashtags, articleImage);
-        return ApiUtils.success(201, null);
+        return ResponseUtil.success(201, null);
     }
 
     @ApiOperation(value = "게시글 수정")
     @PutMapping("/{articleId}")
-    public CommonResponse<?> updateArticles(@PathVariable Long articleId, ArticleRequestDto requestDto, MultipartFile[] articleImage) {
+    public CommonResponse<?> updateArticles(@PathVariable Long articleId, ArticleRequest requestDto, MultipartFile[] articleImage) {
         articleService.updateArticles(requestDto, articleId, articleImage);
-        return ApiUtils.success(200, null);
+        return ResponseUtil.success(200, null);
     }
 
     @ApiOperation(value = "게시글 삭제")
     @DeleteMapping("/{articleId}")
     public CommonResponse<?> deleteArticles(@PathVariable Long articleId) {
         articleService.deleteArticles(articleId);
-        return ApiUtils.success(200, null);
+        return ResponseUtil.success(200, null);
     }
 
     @ApiOperation(value = "게시글 좋아요")
     @PostMapping("/{articleId}/likes")
     public CommonResponse<?> likeArticle(@PathVariable Long articleId) {
         articleService.toggleLike(articleId);
-        return ApiUtils.success(200, null);
+        return ResponseUtil.success(200, null);
     }
 
     @ApiOperation(value = "각 유저가 등록한 글 전체 조회")
     @GetMapping("/feed/{username}")
-    public CommonResponse<List<ArticleResponseDto>> getPersonalFeed(@RequestParam Long articleId, @RequestParam Integer size, @PathVariable String username) {
-        return ApiUtils.success(200, articleService.getPersonalFeed(articleId, size, username));
+    public CommonResponse<List<ArticleResponse>> getPersonalFeed(@RequestParam Long articleId, @RequestParam Integer size, @PathVariable String username) {
+        return ResponseUtil.success(200, articleService.getPersonalFeed(articleId, size, username));
     }
 
     @ApiOperation(value = "로그인한 유저가 좋아요 한 글 조회")
     @GetMapping("/likes")
-    public CommonResponse<List<LikesResponseDto>> getArticlesLiked() {
-        return ApiUtils.success(200, articleService.getArticlesLiked());
+    public CommonResponse<List<HeartResponse>> getArticlesLiked() {
+        return ResponseUtil.success(200, articleService.getArticlesLiked());
     }
 
     @ApiOperation(value = "해시태그 기준 검색 조회")
     @GetMapping("/search")
-    public CommonResponse<List<ArticleResponseDto>> getFilteredPosts(@RequestParam String hashtag) {
-        return ApiUtils.success(200, articleService.findAllByHashtag(hashtag));
+    public CommonResponse<List<ArticleResponse>> getFilteredPosts(@RequestParam String hashtag) {
+        return ResponseUtil.success(200, articleService.findAllByHashtag(hashtag));
     }
 }

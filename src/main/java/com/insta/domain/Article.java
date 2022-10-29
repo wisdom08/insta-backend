@@ -7,7 +7,7 @@ import java.util.*;
 
 @Getter
 @Entity
-public class Article extends Timestamped{
+public class Article extends Timestamp {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

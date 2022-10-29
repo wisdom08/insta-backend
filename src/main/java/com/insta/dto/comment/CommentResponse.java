@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class CommentResponseDto {
+public class CommentResponse {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
@@ -14,9 +14,9 @@ public class CommentResponseDto {
     private int numberOfLikes;
 
 
-    protected CommentResponseDto() {}
+    protected CommentResponse() {}
 
-    private CommentResponseDto(Long id, String content, int numberOfLikes, LocalDateTime createdAt, int numberOfReply) {
+    private CommentResponse(Long id, String content, int numberOfLikes, LocalDateTime createdAt, int numberOfReply) {
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;
@@ -24,7 +24,7 @@ public class CommentResponseDto {
         this.numberOfLikes = numberOfLikes;
     }
 
-    public static CommentResponseDto from(Comment entity) {
-        return new CommentResponseDto(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getReplies().size());
+    public static CommentResponse from(Comment entity) {
+        return new CommentResponse(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getReplies().size());
     }
 }

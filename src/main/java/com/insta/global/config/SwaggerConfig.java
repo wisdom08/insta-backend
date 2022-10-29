@@ -23,37 +23,37 @@ import java.util.List;
 })
 public class SwaggerConfig {
     @Bean
-    public Docket restAPI() {
+    public Docket setUpRestAPI() {
         return new Docket(DocumentationType.OAS_30)
-                .securityContexts(Collections.singletonList(securityContext()))
-                .securitySchemes(List.of(apiKey()))
+                .securityContexts(Collections.singletonList(setUpSecurityContext()))
+                .securitySchemes(List.of(setUpApiKey()))
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.insta.controller"))
                 .paths(PathSelectors.ant("/api/**"))
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false)
-                .apiInfo(this.apiInfo());
+                .apiInfo(this.setUpApiInfo());
     }
 
-    private SecurityContext securityContext() {
+    private SecurityContext setUpSecurityContext() {
         return SecurityContext.builder()
-                .securityReferences(defaultAuth())
+                .securityReferences(setUpDefaultAuth())
                 .build();
     }
 
-    private List<SecurityReference> defaultAuth() {
+    private List<SecurityReference> setUpDefaultAuth() {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
         return List.of(new SecurityReference("Authorization", authorizationScopes));
     }
 
-    private ApiKey apiKey() {
+    private ApiKey setUpApiKey() {
         return new ApiKey("Authorization", "Authorization", "header");
     }
 
-    private ApiInfo apiInfo() {
+    private ApiInfo setUpApiInfo() {
         return new ApiInfoBuilder()
                 .title("A companion animal SNS Spring Boot REST API")
                 .description("반려동물 SNS 서비스의 swagger api 입니다.")

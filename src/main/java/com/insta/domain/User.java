@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Entity
-public class User extends Timestamped {
+public class User extends Timestamp {
 
     @PrePersist
     public void prePersist() {

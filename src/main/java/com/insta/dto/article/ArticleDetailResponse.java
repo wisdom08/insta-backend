@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class ArticleDetailResponseDto {
+public class ArticleDetailResponse {
     private Long id;
     private String content;
     private int numberOfLikes;
@@ -18,9 +18,9 @@ public class ArticleDetailResponseDto {
     private LocalDateTime modifiedAt;
     private Object[] images;
 
-    protected ArticleDetailResponseDto() {}
+    protected ArticleDetailResponse() {}
 
-    public ArticleDetailResponseDto(Long id, String content, int numberOfLikes, LocalDateTime createdAt, LocalDateTime modifiedAt, List<Image> images) {
+    public ArticleDetailResponse(Long id, String content, int numberOfLikes, LocalDateTime createdAt, LocalDateTime modifiedAt, List<Image> images) {
         this.id = id;
         this.content = content;
         this.numberOfLikes = numberOfLikes;
@@ -31,8 +31,8 @@ public class ArticleDetailResponseDto {
                 .toArray();
     }
 
-    public static ArticleDetailResponseDto from(Article entity, List<Image> images) {
-        return new ArticleDetailResponseDto(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getModifiedAt(), images);
+    public static ArticleDetailResponse from(Article entity, List<Image> images) {
+        return new ArticleDetailResponse(entity.getId(), entity.getContent(), entity.getHearts().size(), entity.getCreatedAt(), entity.getModifiedAt(), images);
     }
 
     public void addHashtag(String hashtags) {

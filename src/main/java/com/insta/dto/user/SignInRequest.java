@@ -3,9 +3,9 @@ package com.insta.dto.user;
 import lombok.Getter;
 
 @Getter
-public class LoginRequestDto {
+public class SignInRequest {
     private String username;
     private String password;
 
-    protected LoginRequestDto() {}
+    protected SignInRequest() {}
 }

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
-public class SignupRequestDto {
+public class SignUpRequest {
 
     @Pattern(regexp = "^[a-z0-9_-]{3,16}$")
     @NotBlank
@@ -20,5 +20,5 @@ public class SignupRequestDto {
     @NotBlank
     private String passwordCheck;
 
-    protected SignupRequestDto() {}
+    protected SignUpRequest() {}
 }

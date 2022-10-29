@@ -7,15 +7,15 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ArticleResponseDto {
+public class ArticleResponse {
     private Long id;
     private int numberOfComments;
     private int numberOfLikes;
     private Object[] images;
 
-    protected ArticleResponseDto() {}
+    protected ArticleResponse() {}
 
-    private ArticleResponseDto(Long id, int numberOfComments, int numberOfLikes, List<Image> images) {
+    private ArticleResponse(Long id, int numberOfComments, int numberOfLikes, List<Image> images) {
         this.id = id;
         this.numberOfComments = numberOfComments;
         this.numberOfLikes = numberOfLikes;
@@ -24,7 +24,7 @@ public class ArticleResponseDto {
                 .toArray();
     }
 
-    public static ArticleResponseDto from(Article entity, List<Image> images) {
-      return new ArticleResponseDto(entity.getId(), entity.getComments().size(), entity.getHearts().size(), images);
+    public static ArticleResponse from(Article entity, List<Image> images) {
+      return new ArticleResponse(entity.getId(), entity.getComments().size(), entity.getHearts().size(), images);
     }
 }

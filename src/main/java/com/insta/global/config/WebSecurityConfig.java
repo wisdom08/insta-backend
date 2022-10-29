@@ -1,7 +1,7 @@
-package com.insta.security;
+package com.insta.global.config;
 
-import com.insta.security.jwt.JwtAuthenticationFilter;
-import com.insta.security.jwt.JwtTokenProvider;
+import com.insta.global.security.jwt.JwtAuthenticationFilter;
+import com.insta.global.security.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

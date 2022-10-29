@@ -1,10 +1,10 @@
 package com.insta.controller;
 
-import com.insta.dto.user.InfoRequestDto;
-import com.insta.dto.user.InfoResponseDto;
-import com.insta.dto.user.LoginRequestDto;
-import com.insta.dto.user.SignupRequestDto;
-import com.insta.global.response.ApiUtils;
+import com.insta.dto.user.InfoRequest;
+import com.insta.dto.user.InfoResponse;
+import com.insta.dto.user.SignInRequest;
+import com.insta.dto.user.SignUpRequest;
+import com.insta.global.response.ResponseUtil;
 import com.insta.global.response.CommonResponse;
 import com.insta.service.UserService;
 import io.swagger.annotations.Api;
@@ -30,32 +30,33 @@ public class UserController {
 
     @ApiOperation(value = "로그인")
     @PostMapping("/signin")
-    public ResponseEntity<CommonResponse<Object>> doLogin(@RequestBody LoginRequestDto loginRequestDto){
-        HashMap<Object, Object> map = userService.login(loginRequestDto);
+    public ResponseEntity<CommonResponse<Object>> doLogin(@RequestBody SignInRequest signinRequest){
+        HashMap<Object, Object> map = userService.login(signinRequest);
 
         Object loginResponseDto = map.get("loginResponseDto");
         ResponseCookie responseCookie = (ResponseCookie)map.get("responseCookie");
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(ApiUtils.success(200, loginResponseDto));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(
+            ResponseUtil.success(200, loginResponseDto));
     }
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/signup")
-    public CommonResponse<?> doSignup(@Valid @RequestBody SignupRequestDto signupRequestDto, Errors errors) {
-        userService.registerUser(signupRequestDto, errors);
-        return ApiUtils.success(201, null);
+    public CommonResponse<?> doSignup(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
+        userService.registerUser(signupRequest, errors);
+        return ResponseUtil.success(201, null);
     }
 
     @ApiOperation(value = "유저 정보 조회")
     @GetMapping("/{username}")
-    public CommonResponse<InfoResponseDto> getInfo(@PathVariable String username) {
-        return ApiUtils.success(200, userService.getInfo(username));
+    public CommonResponse<InfoResponse> getInfo(@PathVariable String username) {
+        return ResponseUtil.success(200, userService.getInfo(username));
     }
 
     @ApiOperation(value = "프로필사진/bio 수정")
     @PutMapping("/accounts")
-    public CommonResponse<?> updateInfo(InfoRequestDto infoRequestDto, MultipartFile[] image) {
-        userService.updateInfo(infoRequestDto, image);
-        return ApiUtils.success(200, null);
+    public CommonResponse<?> updateInfo(InfoRequest infoRequest, MultipartFile[] image) {
+        userService.updateInfo(infoRequest, image);
+        return ResponseUtil.success(200, null);
     }
 }

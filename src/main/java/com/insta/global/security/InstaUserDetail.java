@@ -1,4 +1,4 @@
-package com.insta.security;
+package com.insta.global.security;
 
 import com.insta.domain.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,10 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class UserDetailsImpl implements UserDetails {
+public class InstaUserDetail implements UserDetails {
     private final User user;
 
-    public UserDetailsImpl(User user) {
+    public InstaUserDetail(User user) {
         this.user = user;
     }
 

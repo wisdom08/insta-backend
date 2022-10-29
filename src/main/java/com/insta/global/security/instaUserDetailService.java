@@ -1,4 +1,4 @@
-package com.insta.security;
+package com.insta.global.security;
 
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
@@ -11,19 +11,19 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class instaUserDetailService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
-    public UserDetailsServiceImpl() {
+    public instaUserDetailService() {
     }
 
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> {
             throw new EntityNotFoundException(ErrorCode.HANDLE_ACCESS_DENIED);
         });
-        return new UserDetailsImpl(user);
+        return new InstaUserDetail(user);
     }
 
 }

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface ImageRepo extends JpaRepository<Image, Long> {
+public interface ImageRepository extends JpaRepository<Image, Long> {
 	@Query("SELECT i FROM Image i WHERE i.imageTarget = :target AND i.targetId = :targetId")
 	List<Image> findAllByTargetId(@Param("target") ImageTarget target, @Param("targetId") Long targetId);
 

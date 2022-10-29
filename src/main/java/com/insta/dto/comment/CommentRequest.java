@@ -3,8 +3,8 @@ package com.insta.dto.comment;
 import lombok.Getter;
 
 @Getter
-public class CommentRequestDto {
+public class CommentRequest {
     private String content;
 
-    protected CommentRequestDto() {}
+    protected CommentRequest() {}
 }
