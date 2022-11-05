@@ -40,7 +40,8 @@
 https://insta-backend5.herokuapp.com/swagger-ui/
 
 ## 백엔드 배포
-https://insta-backend5.herokuapp.com/
+~~https://insta-backend5.herokuapp.com/~~
+- 비용 문제로 서버는 2022년 11월 5일에 내렸습니다.
 
 ## 개발 환경
 - Intellij IDEA Ultimate
