@@ -63,7 +63,7 @@ public class S3Service {
 
 	public void deleteFile(ImageTarget target, Long targetId) {
 		List<Image> images = imageRepository.findAllByTargetId(target, targetId);
-		if(images.size() != 0) {
+		if(!images.isEmpty()) {
 			for (Image image : images) {
 				String url = image.getImageUrl();
 				amazonS3.deleteObject(bucket, url.split(bucket + "/", 2)[1]);
