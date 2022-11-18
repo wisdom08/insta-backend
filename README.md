@@ -6,6 +6,7 @@
 - 컨벤션, 깃 브랜치 전략 등을 정하며 앞으로 진행할 리팩토링 기본 규칙을 세운다.
   - [컨벤션 정리](https://github.com/wisdom08/insta-backend/wiki/my-conventions)
 - TDD 클린코드 과정에서 학습한 내용을 프로젝트에 반영한다. 
+- SonarCloud 적용
 - 기간
   - 2022.09.24 ~ 
 
