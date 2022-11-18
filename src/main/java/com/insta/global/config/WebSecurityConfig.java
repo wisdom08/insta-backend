@@ -39,7 +39,7 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-                .csrf().ignoringAntMatchers("/api/articles", "/api/auth")
+                .csrf().ignoringAntMatchers("/api/articles/**", "/api/auth/**")
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and().headers().frameOptions().disable()
