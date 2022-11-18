@@ -118,7 +118,7 @@ public class ArticleService {
                 heartRepository::delete
                 ,
                 () -> {
-                    Heart heart = heartRepository.save(Heart.Like(user, article));
+                    Heart heart = heartRepository.save(Heart.like(user, article));
                     article.addHearts(heart);
                 });
     }

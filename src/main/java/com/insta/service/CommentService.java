@@ -104,7 +104,7 @@ public class CommentService {
                 heartRepository::delete
                 ,
                 () -> {
-                    Heart heart = heartRepository.save(Heart.Like(user, comment));
+                    Heart heart = heartRepository.save(Heart.like(user, comment));
                     comment.addHearts(heart);
                 });
     }

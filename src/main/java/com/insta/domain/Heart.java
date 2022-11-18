@@ -36,11 +36,11 @@ public class Heart {
         this.comment = comment;
     }
 
-    public static Heart Like(User user, Article article) {
+    public static Heart like(User user, Article article) {
         return new Heart(user, article);
     }
 
-    public static Heart Like(User user, Comment comment) {
+    public static Heart like(User user, Comment comment) {
         return new Heart(user, comment);
     }
 
