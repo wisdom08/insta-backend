@@ -5,10 +5,10 @@ import com.insta.dto.user.*;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
-import com.insta.jwt.JwtTokenProvider;
-import com.insta.model.Image;
-import com.insta.model.ImageTarget;
-import com.insta.model.User;
+import com.insta.global.security.jwt.JwtTokenProvider;
+import com.insta.domain.Image;
+import com.insta.domain.ImageTarget;
+import com.insta.domain.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -31,16 +31,17 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final S3Service s3Service;
 
-    public void registerUser(SignupRequestDto signupRequestDto, Errors errors) {
-        validateUser(signupRequestDto, errors);
-        User user = User.createUser(signupRequestDto.getUsername(), passwordEncoder.encode(signupRequestDto.getPassword()));
+    public void signUp(SignUpRequest signupRequest, Errors errors) {
+        validateUser(signupRequest, errors);
+        User user = User.createUser(
+            signupRequest.getUsername(), passwordEncoder.encode(signupRequest.getPassword()));
         userRepository.save(user);
     }
 
-    public HashMap<Object, Object> login(LoginRequestDto loginRequestDto) {
-        String username = loginRequestDto.getUsername();
+    public HashMap<Object, Object> signIn(SignInRequest signinRequest) {
+        String username = signinRequest.getUsername();
         User user = exists(username);
-        validatePassword(loginRequestDto.getPassword(), user.getPassword());
+        validatePassword(signinRequest.getPassword(), user.getPassword());
 
         return makeLoginMap(username, user);
     }
@@ -57,8 +58,8 @@ public class UserService {
                 .build();
 
         HashMap<Object, Object> map = new HashMap<>();
-        LoginResponseDto loginResponseDto = LoginResponseDto.toDto(user.getId(), user.getUsername(), accessToken);
-        map.put("loginResponseDto", loginResponseDto);
+        SignInResponse signinResponse = SignInResponse.toDto(user.getId(), user.getUsername(), accessToken);
+        map.put("loginResponseDto", signinResponse);
         map.put("responseCookie", responseCookie);
         return map;
     }
@@ -68,7 +69,7 @@ public class UserService {
         if (!passwordMatching) throw new InvalidValueException(ErrorCode.LOGIN_INPUT_INVALID);
     }
 
-    private void validateUser(SignupRequestDto requestDto, Errors errors) {
+    private void validateUser(SignUpRequest requestDto, Errors errors) {
         userRepository.findByUsername(requestDto.getUsername())
                 .ifPresent(user -> {
                     throw new InvalidValueException(ErrorCode.USERNAME_DUPLICATION);
@@ -81,7 +82,7 @@ public class UserService {
         }
     }
 
-    private void isSamePassword(SignupRequestDto requestDto) {
+    private void isSamePassword(SignUpRequest requestDto) {
         if (!(requestDto.getPassword().equals(requestDto.getPasswordCheck())))
             throw new InvalidValueException(ErrorCode.NOT_EQUAL_INPUT_PASSWORD);
     }
@@ -93,20 +94,20 @@ public class UserService {
     }
 
     @Transactional
-    public InfoResponseDto getInfo(String username) {
+    public InfoResponse getInfo(String username) {
         User user = exists(username);
         Image image = s3Service.getImage(ImageTarget.USER, user.getId());
         String imageUrl = "";
         if (image != null) {
             imageUrl = image.getImageUrl();
         }
-        return InfoResponseDto.makeInfoDto(username, user.getBio(), user.getArticles().size(), imageUrl);
+        return InfoResponse.makeInfoDto(username, user.getBio(), user.getArticles().size(), imageUrl);
     }
 
     @Transactional
-    public void updateInfo(InfoRequestDto infoRequestDto, MultipartFile[] image) {
+    public void updateInfo(InfoRequest infoRequest, MultipartFile[] image) {
         User user = exists(getCurrentUsername());
-        user.updateUser(infoRequestDto.bio());
+        user.updateUser(infoRequest.bio());
 
         s3Service.deleteFile(ImageTarget.USER, user.getId());
         if (image != null) {
