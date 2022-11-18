@@ -11,20 +11,20 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class JwtAuthenticationFilter extends GenericFilterBean {
-    private final JwtTokenProvider jwtTokenProvider;
+public class AuthenticationFilter extends GenericFilterBean {
+    private final TokenProvider tokenProvider;
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = this.jwtTokenProvider.resolveToken((HttpServletRequest)request);
-        if (token != null && this.jwtTokenProvider.validateToken(token)) {
-            Authentication authentication = this.jwtTokenProvider.getAuthentication(token);
+        String token = this.tokenProvider.resolveToken((HttpServletRequest)request);
+        if (token != null && this.tokenProvider.validateToken(token)) {
+            Authentication authentication = this.tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         chain.doFilter(request, response);
     }
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthenticationFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 }

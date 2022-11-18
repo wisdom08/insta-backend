@@ -5,7 +5,7 @@ import com.insta.dto.user.*;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
-import com.insta.global.security.jwt.JwtTokenProvider;
+import com.insta.global.security.jwt.TokenProvider;
 import com.insta.domain.Image;
 import com.insta.domain.ImageTarget;
 import com.insta.domain.User;
@@ -28,7 +28,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
     private final S3Service s3Service;
 
     public void signUp(SignUpRequest signupRequest, Errors errors) {
@@ -47,8 +47,8 @@ public class UserService {
     }
 
     private HashMap<Object, Object> makeLoginMap(String username, User user) {
-        String accessToken = jwtTokenProvider.createToken(username);
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String accessToken = tokenProvider.createToken(username);
+        String refreshToken = tokenProvider.createRefreshToken();
 
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)

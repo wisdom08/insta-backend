@@ -14,7 +14,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider {
+public class TokenProvider {
     @Value("K7kjHSF345h345S86F3A2erGB98iWIad")
     private String secretKey;
 
@@ -68,7 +68,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public JwtTokenProvider(UserDetailsService userDetailsService) {this.userDetailsService = userDetailsService;
+    public TokenProvider(UserDetailsService userDetailsService) {this.userDetailsService = userDetailsService;
     }
 
 }
