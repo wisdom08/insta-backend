@@ -52,7 +52,7 @@ public class TokenProvider {
     }
 
     public String getUserPk(String token) {
-        return ((Claims) Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody()).getSubject();
+        return (Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody()).getSubject();
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -62,7 +62,7 @@ public class TokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(jwtToken);
-            return !((Claims) claims.getBody()).getExpiration().before(new Date());
+            return !(claims.getBody()).getExpiration().before(new Date());
         } catch (Exception var3) {
             return false;
         }
