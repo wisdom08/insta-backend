@@ -1,14 +1,14 @@
 package com.insta.service;
 
 
+import com.insta.domain.Image;
+import com.insta.domain.ImageTarget;
+import com.insta.domain.User;
 import com.insta.dto.user.*;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
 import com.insta.global.security.jwt.TokenProvider;
-import com.insta.domain.Image;
-import com.insta.domain.ImageTarget;
-import com.insta.domain.User;
 import com.insta.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public HashMap<Object, Object> signIn(SignInRequest signinRequest) {
+    public Map<Object, Object> signIn(SignInRequest signinRequest) {
         String username = signinRequest.getUsername();
         User user = exists(username);
         validatePassword(signinRequest.getPassword(), user.getPassword());
@@ -46,7 +47,7 @@ public class UserService {
         return makeLoginMap(username, user);
     }
 
-    private HashMap<Object, Object> makeLoginMap(String username, User user) {
+    private Map<Object, Object> makeLoginMap(String username, User user) {
         String accessToken = tokenProvider.createToken(username);
         String refreshToken = tokenProvider.createRefreshToken();
 
@@ -57,7 +58,7 @@ public class UserService {
                 .maxAge(60)
                 .build();
 
-        HashMap<Object, Object> map = new HashMap<>();
+        Map<Object, Object> map = new HashMap<>();
         SignInResponse signinResponse = SignInResponse.toDto(user.getId(), user.getUsername(), accessToken);
         map.put("loginResponseDto", signinResponse);
         map.put("responseCookie", responseCookie);
