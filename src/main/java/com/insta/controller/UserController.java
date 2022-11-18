@@ -42,7 +42,7 @@ public class UserController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/signup")
-    public CommonResponse<?> signUp(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
+    public CommonResponse<CommonResponse> signUp(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
         userService.signUp(signupRequest, errors);
         return ResponseUtil.success(201, null);
     }
@@ -55,7 +55,7 @@ public class UserController {
 
     @ApiOperation(value = "프로필사진/bio 수정")
     @PutMapping("/accounts")
-    public CommonResponse<?> updateInfo(InfoRequest infoRequest, MultipartFile[] image) {
+    public CommonResponse<CommonResponse> updateInfo(InfoRequest infoRequest, MultipartFile[] image) {
         userService.updateInfo(infoRequest, image);
         return ResponseUtil.success(200, null);
     }

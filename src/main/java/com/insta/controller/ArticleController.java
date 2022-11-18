@@ -38,7 +38,7 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 등록")
     @PostMapping
-    public CommonResponse<?> createArticles(ArticleRequest requestDto, MultipartFile[] articleImage,
+    public CommonResponse<CommonResponse> createArticles(ArticleRequest requestDto, MultipartFile[] articleImage,
                                             @RequestParam(value = "hashtags", defaultValue = "false") List<String> hashtags){
         articleService.createArticle(requestDto, hashtags, articleImage);
         return ResponseUtil.success(201, null);
@@ -46,21 +46,21 @@ public class ArticleController {
 
     @ApiOperation(value = "게시글 수정")
     @PutMapping("/{articleId}")
-    public CommonResponse<?> updateArticles(@PathVariable Long articleId, ArticleRequest requestDto, MultipartFile[] articleImage) {
+    public CommonResponse<CommonResponse> updateArticles(@PathVariable Long articleId, ArticleRequest requestDto, MultipartFile[] articleImage) {
         articleService.updateArticles(requestDto, articleId, articleImage);
         return ResponseUtil.success(200, null);
     }
 
     @ApiOperation(value = "게시글 삭제")
     @DeleteMapping("/{articleId}")
-    public CommonResponse<?> deleteArticles(@PathVariable Long articleId) {
+    public CommonResponse<CommonResponse> deleteArticles(@PathVariable Long articleId) {
         articleService.deleteArticles(articleId);
         return ResponseUtil.success(200, null);
     }
 
     @ApiOperation(value = "게시글 좋아요")
     @PostMapping("/{articleId}/likes")
-    public CommonResponse<?> likeArticle(@PathVariable Long articleId) {
+    public CommonResponse<CommonResponse> likeArticle(@PathVariable Long articleId) {
         articleService.toggleLike(articleId);
         return ResponseUtil.success(200, null);
     }
