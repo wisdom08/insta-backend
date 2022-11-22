@@ -1,17 +1,17 @@
 package com.insta.service;
 
-import com.insta.dto.comment.CommentRequestDto;
-import com.insta.dto.comment.CommentResponseDto;
-import com.insta.dto.comment.ReplyResponseDto;
+import com.insta.dto.comment.CommentRequest;
+import com.insta.dto.comment.CommentResponse;
+import com.insta.dto.comment.ReplyResponse;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
 import com.insta.global.error.exception.InvalidValueException;
-import com.insta.model.Article;
-import com.insta.model.Comment;
-import com.insta.model.Heart;
-import com.insta.model.User;
-import com.insta.repository.CommentRepo;
-import com.insta.repository.LikeRepo;
+import com.insta.domain.Article;
+import com.insta.domain.Comment;
+import com.insta.domain.Heart;
+import com.insta.domain.User;
+import com.insta.repository.CommentRepository;
+import com.insta.repository.HeartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,31 +27,31 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
 
-    private final CommentRepo commentRepo;
+    private final CommentRepository commentRepository;
     private final ArticleService articleService;
     private final UserService userService;
-    private final LikeRepo likeRepo;
+    private final HeartRepository heartRepository;
 
-    public void createComment(Long articleId, CommentRequestDto commentRequestDto) {
+    public void createComment(Long articleId, CommentRequest commentRequest) {
         User user = userService.exists(getCurrentUsername());
         Article article = articleService.exists(articleId);
-        commentRepo.save(Comment.createComment(article, commentRequestDto.getContent(), user));
+        commentRepository.save(Comment.createComment(article, commentRequest.getContent(), user));
     }
 
     @Transactional
-    public List<CommentResponseDto> getComments(Long articleId, Long commentId, Integer size) {
+    public List<CommentResponse> getComments(Long articleId, Long commentId, Integer size) {
         Article article = articleService.exists(articleId);
-        Slice<Comment> commentList = commentRepo.findAllOrderByIdDesc(commentId, article, Pageable.ofSize(size));
-        return commentList.stream().map(CommentResponseDto::from)
+        Slice<Comment> commentList = commentRepository.findAllOrderByIdDesc(commentId, article, Pageable.ofSize(size));
+        return commentList.stream().map(CommentResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ReplyResponseDto> getReplies(Long articleId, Long commentId, Long replyId, Integer size) {
+    public List<ReplyResponse> getReplies(Long articleId, Long commentId, Long replyId, Integer size) {
         articleService.exists(articleId);
         Comment comment = exists(commentId);
-        Slice<Comment> replyList = commentRepo.findAllRepliesByParent(comment, replyId, Pageable.ofSize(size));
-        return replyList.stream().map(ReplyResponseDto::from)
+        Slice<Comment> replyList = commentRepository.findAllRepliesByParent(comment, replyId, Pageable.ofSize(size));
+        return replyList.stream().map(ReplyResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -60,7 +60,7 @@ public class CommentService {
         articleService.exists(articleId);
         isAuthorized(commentId);
 
-        commentRepo.deleteById(commentId);
+        commentRepository.deleteById(commentId);
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class CommentService {
         exists(commentId);
         isAuthorized(replyId);
 
-        commentRepo.deleteById(replyId);
+        commentRepository.deleteById(replyId);
     }
 
     private void isAuthorized(Long id) {
@@ -78,15 +78,15 @@ public class CommentService {
         if(user != comment.getUser()) throw new InvalidValueException(ErrorCode.NOT_AUTHORIZED);
     }
 
-    public void createReply(Long articleId, Long commentId, CommentRequestDto commentRequestDto) {
+    public void createReply(Long articleId, Long commentId, CommentRequest commentRequest) {
         User user = userService.exists(getCurrentUsername());
         Article article = articleService.exists(articleId);
         Comment comment = exists(commentId);
-        commentRepo.save(Comment.createReply(article, comment, commentRequestDto.getContent(), user));
+        commentRepository.save(Comment.createReply(article, comment, commentRequest.getContent(), user));
     }
 
     public Comment exists(Long commentId) {
-        return commentRepo.findById(commentId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTFOUND_COMMENT));
+        return commentRepository.findById(commentId).orElseThrow(() -> new EntityNotFoundException(ErrorCode.NOTFOUND_COMMENT));
     }
 
     private String getCurrentUsername() {
@@ -100,11 +100,11 @@ public class CommentService {
         User user = userService.exists(getCurrentUsername());
         Comment comment = exists(commentId);
 
-        likeRepo.findByUserAndComment(user, comment).ifPresentOrElse(
-                likeRepo::delete
+        heartRepository.findByUserAndComment(user, comment).ifPresentOrElse(
+                heartRepository::delete
                 ,
                 () -> {
-                    Heart heart = likeRepo.save(Heart.Like(user, comment));
+                    Heart heart = heartRepository.save(Heart.like(user, comment));
                     comment.addHearts(heart);
                 });
     }

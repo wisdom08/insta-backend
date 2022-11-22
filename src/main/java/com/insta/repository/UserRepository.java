@@ -1,6 +1,6 @@
 package com.insta.repository;
 
-import com.insta.model.User;
+import com.insta.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

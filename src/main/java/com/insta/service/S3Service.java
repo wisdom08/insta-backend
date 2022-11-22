@@ -6,9 +6,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.insta.global.error.exception.EntityNotFoundException;
 import com.insta.global.error.exception.ErrorCode;
-import com.insta.model.Image;
-import com.insta.model.ImageTarget;
-import com.insta.repository.ImageRepo;
+import com.insta.domain.Image;
+import com.insta.domain.ImageTarget;
+import com.insta.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
-	private final ImageRepo imageRepo;
+	private final ImageRepository imageRepository;
 
 	private final AmazonS3 amazonS3;
 
@@ -57,26 +57,26 @@ public class S3Service {
 					.targetId(targetId)
 					.imageUrl(imagePath)
 					.build();
-			imageRepo.save(image);
+			imageRepository.save(image);
 		}
 	}
 
 	public void deleteFile(ImageTarget target, Long targetId) {
-		List<Image> images = imageRepo.findAllByTargetId(target, targetId);
-		if(images.size() != 0) {
+		List<Image> images = imageRepository.findAllByTargetId(target, targetId);
+		if(!images.isEmpty()) {
 			for (Image image : images) {
 				String url = image.getImageUrl();
 				amazonS3.deleteObject(bucket, url.split(bucket + "/", 2)[1]);
 			}
 		}
-		imageRepo.deleteAllByTargetId(target, targetId);
+		imageRepository.deleteAllByTargetId(target, targetId);
 	}
 
 	public Image getImage(ImageTarget target, Long targetId) {
-		return imageRepo.findByTargetId(target, targetId);
+		return imageRepository.findByTargetId(target, targetId);
 	}
 
 	public List<Image> getImages(ImageTarget target, Long targetId) {
-		return imageRepo.findAllByTargetId(target, targetId);
+		return imageRepository.findAllByTargetId(target, targetId);
 	}
 }
