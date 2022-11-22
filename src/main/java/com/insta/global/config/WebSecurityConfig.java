@@ -1,7 +1,7 @@
 package com.insta.global.config;
 
-import com.insta.global.security.jwt.JwtAuthenticationFilter;
-import com.insta.global.security.jwt.JwtTokenProvider;
+import com.insta.global.security.jwt.AuthenticationFilter;
+import com.insta.global.security.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 public class WebSecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProvider tokenProvider;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -39,8 +39,8 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf().ignoringAntMatchers("/api/articles/**", "/api/auth/**")
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and().headers().frameOptions().disable()
 
@@ -58,13 +58,13 @@ public class WebSecurityConfig {
                 .anyRequest().permitAll()
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                .addFilterBefore(new AuthenticationFilter(tokenProvider),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-    public WebSecurityConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public WebSecurityConfig(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
 }

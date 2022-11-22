@@ -23,14 +23,14 @@ public class CommentController {
 
     @ApiOperation(value = "댓글 등록")
     @PostMapping
-    public CommonResponse<?> createComment(@PathVariable Long articleId, @RequestBody CommentRequest commentRequest) {
+    public CommonResponse<CommonResponse> createComment(@PathVariable Long articleId, @RequestBody CommentRequest commentRequest) {
         commentService.createComment(articleId, commentRequest);
         return ResponseUtil.success(201, null);
     }
 
     @ApiOperation(value = "대댓글 등록")
     @PostMapping("/comments/{commentId}/replies")
-    public CommonResponse<?> createReply(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
+    public CommonResponse<CommonResponse> createReply(@PathVariable Long articleId, @PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
         commentService.createReply(articleId, commentId, commentRequest);
         return ResponseUtil.success(201, null);
     }
@@ -56,14 +56,14 @@ public class CommentController {
 
     @ApiOperation(value = "대댓글 삭제")
     @DeleteMapping("/comments/{commentId}/replies/{replyId}")
-    public CommonResponse<?> deleteReply(@PathVariable Long articleId, @PathVariable Long commentId, @PathVariable Long replyId) {
+    public CommonResponse<CommonResponse> deleteReply(@PathVariable Long articleId, @PathVariable Long commentId, @PathVariable Long replyId) {
         commentService.deleteReply(articleId, commentId, replyId);
         return ResponseUtil.success(200, null);
     }
 
     @ApiOperation(value = "댓글/대댓글 좋아요")
     @PostMapping("/comments/{commentId}/likes")
-    public CommonResponse<?> likeComment(@PathVariable Long commentId, @PathVariable Long articleId) {
+    public CommonResponse<CommonResponse> likeComment(@PathVariable Long commentId, @PathVariable Long articleId) {
         commentService.toggleLike(articleId, commentId);
         return ResponseUtil.success(200, null);
     }

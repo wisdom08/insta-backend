@@ -22,6 +22,9 @@ import java.util.List;
         "com.insta.controller"
 })
 public class SwaggerConfig {
+
+    public static final String REFERENCE = "Authorization";
+
     @Bean
     public Docket setUpRestAPI() {
         return new Docket(DocumentationType.OAS_30)
@@ -46,11 +49,11 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return List.of(new SecurityReference("Authorization", authorizationScopes));
+        return List.of(new SecurityReference(REFERENCE, authorizationScopes));
     }
 
     private ApiKey setUpApiKey() {
-        return new ApiKey("Authorization", "Authorization", "header");
+        return new ApiKey(REFERENCE, REFERENCE, "header");
     }
 
     private ApiInfo setUpApiInfo() {

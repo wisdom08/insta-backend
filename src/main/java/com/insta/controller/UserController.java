@@ -4,8 +4,8 @@ import com.insta.dto.user.InfoRequest;
 import com.insta.dto.user.InfoResponse;
 import com.insta.dto.user.SignInRequest;
 import com.insta.dto.user.SignUpRequest;
-import com.insta.global.response.ResponseUtil;
 import com.insta.global.response.CommonResponse;
+import com.insta.global.response.ResponseUtil;
 import com.insta.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.HashMap;
+import java.util.Map;
 
 @Api(tags = "유저 API")
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class UserController {
     @ApiOperation(value = "로그인")
     @PostMapping("/signin")
     public ResponseEntity<CommonResponse<Object>> signIn(@RequestBody SignInRequest signinRequest){
-        HashMap<Object, Object> map = userService.signIn(signinRequest);
+        Map<Object, Object> map = userService.signIn(signinRequest);
 
         Object loginResponseDto = map.get("loginResponseDto");
         ResponseCookie responseCookie = (ResponseCookie)map.get("responseCookie");
@@ -42,7 +42,7 @@ public class UserController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/signup")
-    public CommonResponse<?> signUp(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
+    public CommonResponse<CommonResponse> signUp(@Valid @RequestBody SignUpRequest signupRequest, Errors errors) {
         userService.signUp(signupRequest, errors);
         return ResponseUtil.success(201, null);
     }
@@ -55,7 +55,7 @@ public class UserController {
 
     @ApiOperation(value = "프로필사진/bio 수정")
     @PutMapping("/accounts")
-    public CommonResponse<?> updateInfo(InfoRequest infoRequest, MultipartFile[] image) {
+    public CommonResponse<CommonResponse> updateInfo(InfoRequest infoRequest, MultipartFile[] image) {
         userService.updateInfo(infoRequest, image);
         return ResponseUtil.success(200, null);
     }

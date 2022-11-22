@@ -14,7 +14,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider {
+public class TokenProvider {
     @Value("K7kjHSF345h345S86F3A2erGB98iWIad")
     private String secretKey;
 
@@ -52,7 +52,7 @@ public class JwtTokenProvider {
     }
 
     public String getUserPk(String token) {
-        return ((Claims) Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody()).getSubject();
+        return (Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody()).getSubject();
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -62,13 +62,13 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(jwtToken);
-            return !((Claims) claims.getBody()).getExpiration().before(new Date());
+            return !(claims.getBody()).getExpiration().before(new Date());
         } catch (Exception var3) {
             return false;
         }
     }
 
-    public JwtTokenProvider(UserDetailsService userDetailsService) {this.userDetailsService = userDetailsService;
+    public TokenProvider(UserDetailsService userDetailsService) {this.userDetailsService = userDetailsService;
     }
 
 }
