@@ -1,6 +1,7 @@
 package com.insta.repository;
 
 import com.insta.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,22 +15,25 @@ class UserRepositoryTest {
 
     private static final String USERNAME = "wisdom";
     private static final String PASSWORD = "asdfasdf123";
-    private static final String EXCEPTION_MESSAGE_FOR_WRONG_USERNAME = "wrong username";
+    private User user;
+    private User savedUser;
+
     @Autowired
     private UserRepository userRepository;
 
+    @BeforeEach
+    void setUp() {
+        user = User.createUser(USERNAME, PASSWORD);
+        savedUser = userRepository.save(user);
+    }
+
     @Test
     void 유저_저장() {
-        User user = User.createUser(USERNAME, PASSWORD);
-        User savedUser = userRepository.save(user);
         assertThat(savedUser).isEqualTo(user);
     }
 
     @Test
     void 저장된_유저_아이디로_조회() {
-        User user = User.createUser(USERNAME, PASSWORD);
-        userRepository.save(user);
-        User findUser = userRepository.findByUsername(USERNAME).orElseThrow(() -> new IllegalArgumentException(EXCEPTION_MESSAGE_FOR_WRONG_USERNAME));
-        assertThat(findUser).isEqualTo(user);
+        assertThat(savedUser.getUsername()).isEqualTo(user.getUsername());
     }
 }
