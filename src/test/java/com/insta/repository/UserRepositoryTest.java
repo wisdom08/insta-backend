@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 class UserRepositoryTest {
 
-    public static final String USERNAME = "wisdom";
-    public static final String PASSWORD = "asdfasdf123";
-    public static final String EXCEPTION_MESSAGE_FOR_WRONG_USERNAME = "wrong username";
+    private static final String USERNAME = "wisdom";
+    private static final String PASSWORD = "asdfasdf123";
+    private static final String EXCEPTION_MESSAGE_FOR_WRONG_USERNAME = "wrong username";
     @Autowired
     private UserRepository userRepository;
 
