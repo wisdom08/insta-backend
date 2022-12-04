@@ -18,8 +18,12 @@ class UserRepositoryTest {
     private User user;
     private User savedUser;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    UserRepositoryTest(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @BeforeEach
     void setUp() {
