@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Table(name = "users")
 @Entity
 public class User extends Timestamp {
 
