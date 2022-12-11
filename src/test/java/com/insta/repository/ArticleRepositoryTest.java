@@ -51,7 +51,13 @@ class ArticleRepositoryTest {
 
     @Test
     void 게시글_조회_내림차순() {
-        List<Article> articles = articleRepository.findAllOrderByUserDesc(article.getId(), Pageable.ofSize(999), user).getContent();
-        assertThat(articles.get(0)).isEqualTo("CONTENT");
+        article = Article.createArticle("CONTENT1", user);
+        savedArticle = articleRepository.save(article);
+        secondSavedArticle = articleRepository.save(Article.createArticle("CONTENT2", user));
+        thirdSavedArticle = articleRepository.save(Article.createArticle("CONTENT3", secondUser));
+
+        List<Article> articles = articleRepository.findAllOrderByIdDesc(savedArticle.getId(), Pageable.ofSize(999)).getContent();
+
+        assertThat(articles.get(0).getContent()).isEqualTo("CONTENT3");
     }
 }
