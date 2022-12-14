@@ -19,7 +19,7 @@ public class Comment extends Timestamp {
 
     private String content;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "article_id")
     private Article article;
 
