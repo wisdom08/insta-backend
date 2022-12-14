@@ -3,6 +3,7 @@ package com.insta.repository;
 import com.insta.domain.Article;
 import com.insta.domain.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,13 +43,15 @@ class ArticleRepositoryTest {
         thirdSavedArticle = articleRepository.save(Article.createArticle("CONTENT3", secondUser));
     }
 
+    @DisplayName("게시글이 정상적으로 저장된다.")
     @Test
-    void 게시글_저장() {
+    void saveArticleTest() {
         assertThat(savedArticle).isEqualTo(article);
     }
 
+    @DisplayName("게시글이 내림차순으로 조회된다.")
     @Test
-    void 게시글_조회_내림차순() {
+    void findAllOrderByIdDescTest() {
         article = Article.createArticle("CONTENT1", user);
         savedArticle = articleRepository.save(article);
         secondSavedArticle = articleRepository.save(Article.createArticle("CONTENT2", user));
@@ -59,8 +62,9 @@ class ArticleRepositoryTest {
         assertThat(articles.get(0).getContent()).isEqualTo("CONTENT3");
     }
 
+    @DisplayName("게시글이 유저별로 내림차순 조회된다.")
     @Test
-    void 게시글_조회_유저별_내림차순() {
+    void findAllOrderByUserDescTest() {
         article = Article.createArticle("CONTENT1", user);
         savedArticle = articleRepository.save(article);
         secondSavedArticle = articleRepository.save(Article.createArticle("CONTENT2", user));
