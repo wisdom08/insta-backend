@@ -59,7 +59,7 @@ class CommentRepositoryTest {
     @DisplayName("하나의 게시글에 있는 모든 댓글을 보여준다.")
     @Test
     void findAllTest() {
-        List<Comment> comments = commentRepository.findAll();
+        List<Comment> comments = commentRepository.findByArticle(article);
         assertThat(comments).hasSize(2);
     }
 
