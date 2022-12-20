@@ -12,11 +12,11 @@ public class HashtagVariable {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "hashtag_id")
     private Hashtag hashtag;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
 
