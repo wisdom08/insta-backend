@@ -27,10 +27,10 @@ public class Comment extends Timestamp {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> replies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Heart> hearts = new ArrayList<>();
 
     protected Comment() {}

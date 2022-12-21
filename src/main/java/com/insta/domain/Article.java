@@ -19,13 +19,13 @@ public class Article extends Timestamp {
     @Column(nullable = false)
     private String content;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Heart> hearts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<HashtagVariable> hashtagVariables;
 
     protected Article() {}

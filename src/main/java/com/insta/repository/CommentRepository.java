@@ -13,12 +13,12 @@ import org.springframework.stereotype.Repository;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query("select c from Comment c " +
-            "where c.article = :article and c.parent is null and c.id < :id " +
+            "where c.article = :article and c.parent is null and c.id <= :id " +
             "order by c.id desc")
     Slice<Comment> findAllOrderByIdDesc(@Param("id") Long id, @Param("article") Article article, Pageable pageable);
 
     @Query("select c from Comment c " +
-            "where c.parent = :comment and c.id < :replyId " +
+            "where c.parent = :comment and c.id <= :replyId " +
             "order by c.id desc")
     Slice<Comment> findAllRepliesByParent(@Param("comment") Comment comment, @Param("replyId") Long replyId, Pageable ofSize);
 }
