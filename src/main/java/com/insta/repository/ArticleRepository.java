@@ -11,12 +11,12 @@ import org.springframework.data.repository.query.Param;
 public interface ArticleRepository extends JpaRepository<Article, Long>{
 
     @Query("select a from Article a " +
-            "where a.id < :id " +
+            "where a.id <= :id " +
             "order by a.id desc")
     Slice<Article> findAllOrderByIdDesc(@Param("id") Long id, Pageable pageable);
 
     @Query("select a from Article a " +
-            "where a.id < :id and a.user = :user " +
+            "where a.id <= :id and a.user = :user " +
             "order by a.id desc")
     Slice<Article> findAllOrderByUserDesc(@Param("id") Long id, Pageable pageable, @Param("user") User user);
 }
