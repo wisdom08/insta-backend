@@ -3,7 +3,6 @@ package com.insta.repository;
 import com.insta.domain.Article;
 import com.insta.domain.Comment;
 import com.insta.domain.User;
-import com.insta.dto.comment.CommentRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,73 +18,63 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DataJpaTest
 class CommentRepositoryTest {
 
-    private CommentRepository commentRepository;
-    private ArticleRepository articleRepository;
-    private UserRepository userRepository;
-    private Comment comment;
-    private Comment secondComment;
-    private Comment savedReply;
-    private Comment savedSecondReply;
-    private Article article;
     private User user;
+    private Article article;
+    private Article secondArticle;
+    private Comment comment;
+    private Comment reply;
 
     @Autowired
-    public CommentRepositoryTest(CommentRepository commentRepository, ArticleRepository articleRepository, UserRepository userRepository) {
-        this.commentRepository = commentRepository;
-        this.articleRepository = articleRepository;
-        this.userRepository = userRepository;
-    }
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-        user = User.createUser("user1", "pw1");
-        article = Article.createArticle("article1", user);
-        articleRepository.save(article);
-        userRepository.save(user);
-
+        user = userRepository.save(User.createUser("user1", "pw1"));
+        article = articleRepository.save(Article.createArticle("article1", user));
+        secondArticle = articleRepository.save(Article.createArticle("article2", user));
         comment = commentRepository.save(Comment.createComment(article, "comment1", user));
-        secondComment = commentRepository.save(Comment.createComment(article, "comment2", user));
+        reply = commentRepository.save(Comment.createReply(article, comment, "reply1", user));
     }
+
 
     @DisplayName("댓글이 정상적으로 저장된다.")
     @Test
     void saveTest() {
+        Comment comment = Comment.createComment(article, "comment2", user);
+        Comment savedSecondComment = commentRepository.save(comment);
+
         assertAll(
-                () -> assertThat(comment).isNotNull(),
-                () -> assertThat(comment.getContent()).isEqualTo("comment1")
+                () -> assertThat(savedSecondComment).isNotNull(),
+                () -> assertThat(savedSecondComment).isEqualTo(comment)
         );
     }
 
-    @DisplayName("하나의 게시글에 있는 모든 댓글을 보여준다.")
-    @Test
-    void findAllTest() {
-        List<Comment> comments = commentRepository.findByArticle(article);
-        assertThat(comments).hasSize(2);
-    }
 
-    @DisplayName("하나의 게시글에 있는 모든 댓글을 내림차순으로 정렬해서 보여준다.")
+    @DisplayName("하나의 게시글에 있는 모든 댓글을 id 기준 내림차순으로 조회한다.")
     @Test
     void findAllOrderByIdDescTest() {
-        Comment savedComment = commentRepository.save(Comment.createComment(article, "content1", user));
+        Comment savedSecondComment = commentRepository.save(Comment.createComment(article, "comment2", user));
+        commentRepository.save(Comment.createComment(secondArticle, "comment3", user));
 
-        List<Comment> comments = commentRepository.findAllOrderByIdDesc(savedComment.getId(), article, Pageable.ofSize(999)).getContent();
+        List<Comment> comments = commentRepository.findAllOrderByIdDesc(savedSecondComment.getId(), article, Pageable.ofSize(999)).getContent();
         assertThat(comments).hasSize(2);
-        assertThat(comments.get(0).getContent()).isEqualTo("comment2");
+        assertThat(comments.get(0).getId()).isEqualTo(savedSecondComment.getId());
     }
 
-    @DisplayName("하나의 게시글에 있는 특정 댓글의 대댓글을 내림차순으로 정렬해서 보여준다.")
+    @DisplayName("하나의 게시글에 있는 특정 댓글의 대댓글을 id 기준 내림차순으로 조회한다.")
     @Test
     void findAllRepliesByParentTest() {
-
-        CommentRequest commentRequest = new CommentRequest("reply1");
-        CommentRequest commentSecondRequest = new CommentRequest("reply2");
-
-        savedReply = commentRepository.save(Comment.createReply(article, comment, commentRequest.getContent(), user));
-        savedSecondReply = commentRepository.save(Comment.createReply(article, comment, commentSecondRequest.getContent(), user));
+        Comment savedSecondReply = commentRepository.save(Comment.createReply(article, comment, "reply2", user));
 
         List<Comment> replies = commentRepository.findAllRepliesByParent(comment, savedSecondReply.getId(), Pageable.ofSize(999)).getContent();
 
         assertThat(replies).hasSize(2);
-        assertThat(replies.get(0).getContent()).isEqualTo("reply2");
+        assertThat(replies.get(0).getId()).isEqualTo(savedSecondReply.getId());
     }
 }
